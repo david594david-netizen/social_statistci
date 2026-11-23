@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>社會統計互動學習網</title>
-    <!-- 引入 Tailwind CSS 以進行快速且響應式的樣式設計 -->
+    
+    <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入 Google Fonts (Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- 引入 Chart.js 用於繪製統計圖表 -->
+    <!-- 引入 Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- 引入 Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- 引入 FontAwesome 用於圖示 -->
+    <!-- 引入 FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
@@ -18,14 +19,15 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
                     },
                     colors: {
-                        primary: '#4F46E5', // Indigo 600
-                        secondary: '#10B981', // Emerald 500
-                        accent: '#F59E0B', // Amber 500
-                        dark: '#1F2937', // Gray 800
-                        light: '#F3F4F6', // Gray 100
+                        primary: '#4338ca', // Indigo 700
+                        secondary: '#0d9488', // Teal 600
+                        accent: '#d97706', // Amber 600
+                        dark: '#1e293b', // Slate 800
+                        light: '#f8fafc', // Slate 50
+                        example: '#fffbeb', // Amber 50 (For real-life examples)
                     }
                 }
             }
@@ -33,10 +35,10 @@
     </script>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F9FAFB; /* Gray 50 */
-            color: #374151; /* Gray 700 */
-            line-height: 1.6;
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #f1f5f9; /* Slate 100 */
+            color: #334155; /* Slate 700 */
+            line-height: 1.7;
         }
         
         .section-container {
@@ -49,7 +51,7 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -58,15 +60,15 @@
         }
         
         .nav-link:hover {
-            color: #4F46E5;
-            background-color: #EEF2FF; /* Indigo 50 */
+            color: #4338ca;
+            background-color: #e0e7ff; 
         }
         
         .nav-link.active {
-            color: #4F46E5;
-            background-color: #EEF2FF;
-            font-weight: 600;
-            border-left: 4px solid #4F46E5;
+            color: #4338ca;
+            background-color: #e0e7ff;
+            font-weight: 700;
+            border-left: 4px solid #4338ca;
         }
 
         .card-hover {
@@ -74,33 +76,108 @@
         }
         
         .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
 
-        /* 針對小螢幕的導覽列樣式調整 */
+        .example-box {
+            border-left: 4px solid #f59e0b; /* Amber 500 */
+        }
+
+        /* --- 新增：工具包與成就系統的 CSS --- */
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 99;
+        }
+        .fab-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4338ca, #3b82f6);
+            box-shadow: 0 4px 15px rgba(67, 56, 202, 0.4);
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .fab-button:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+        .stat-panel {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 320px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            padding: 20px;
+            z-index: 98;
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        .stat-panel.show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .status-icon {
+            transition: color 0.3s;
+        }
+        .status-icon.viewed {
+            color: #10b981; /* emerald-500 */
+        }
+        .badge-icon {
+            filter: grayscale(100%);
+            opacity: 0.3;
+            transition: all 0.5s;
+        }
+        .badge-icon.earned {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.2);
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        /* 成就解鎖動畫 */
+        @keyframes unlockBadge {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.5) rotate(-10deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+        .badge-animation {
+            animation: unlockBadge 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
         @media (max-width: 768px) {
             .nav-link.active {
                 border-left: none;
-                border-bottom: 4px solid #4F46E5;
+                border-bottom: 4px solid #4338ca;
             }
         }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- 頂部導覽列 -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <div class="flex-shrink-0 flex items-center">
-                    <i class="fa-solid fa-chart-pie text-primary text-3xl mr-2"></i>
-                    <span class="font-bold text-xl text-dark tracking-tight">社會統計互動學習網</span>
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="showSection('home')">
+                    <i class="fa-solid fa-chart-line text-primary text-2xl mr-3"></i>
+                    <span class="font-black text-xl text-dark tracking-tight">社會統計學習網</span>
+                    <span class="hidden md:inline-block ml-4 text-xs font-semibold text-gray-500 bg-slate-100 px-2 py-1 rounded-md border border-slate-200 shadow-sm">
+                        南開科技大學長照系大衛林老師
+                    </span>
                 </div>
-                
-                <!-- 行動裝置選單按鈕 -->
                 <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700">
+                    <button id="mobile-menu-btn" class="text-gray-500 hover:text-primary focus:outline-none">
                         <i class="fa-solid fa-bars text-2xl"></i>
                     </button>
                 </div>
@@ -108,500 +185,864 @@
         </div>
     </header>
 
-    <!-- 主內容區塊：包含側邊欄和主要內容 -->
     <div class="flex-grow flex flex-col md:flex-row max-w-7xl w-full mx-auto">
         
-        <!-- 側邊導覽列 (桌機) / 水平導覽列 (手機) -->
         <nav id="main-nav" class="w-full md:w-64 bg-white md:bg-transparent shadow-md md:shadow-none order-2 md:order-1 hidden md:block md:sticky md:top-16 md:h-[calc(100vh-4rem)] overflow-y-auto">
-            <div class="p-4 md:p-6 space-y-1 flex flex-row md:flex-col overflow-x-auto md:overflow-hidden whitespace-nowrap md:whitespace-normal pb-6 md:pb-6 border-b md:border-b-0 border-gray-200">
+            <div class="p-4 md:p-6 space-y-2 flex flex-row md:flex-col overflow-x-auto md:overflow-hidden whitespace-nowrap md:whitespace-normal pb-6 border-b md:border-b-0 border-gray-200">
                 
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 hidden md:block mt-2">第一篇：概論與基礎</p>
-                <button onclick="showSection('part1-intro')" id="nav-part1-intro" class="nav-link active w-full text-left px-4 py-3 rounded-lg md:rounded-r-full text-sm font-medium flex items-center gap-3">
-                    <i class="fa-solid fa-seedling w-5 text-center"></i> 統計概念與測量
-                </button>
+                <!-- 新增：進度條小面板 -->
+                <div class="mb-4 hidden md:block text-center bg-indigo-50 rounded-xl p-3 border border-indigo-100">
+                    <div class="text-xs font-bold text-indigo-800 mb-1">學習進度</div>
+                    <div class="w-full bg-indigo-200 rounded-full h-2 mb-1">
+                        <div id="nav-progress-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <div class="text-[10px] text-indigo-600 font-bold"><span id="nav-progress-text">0</span>% 達成率</div>
+                </div>
 
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 hidden md:block mt-6">第二篇：描述性統計</p>
-                <button onclick="showSection('part2-desc')" id="nav-part2-desc" class="nav-link w-full text-left px-4 py-3 rounded-lg md:rounded-r-full text-sm font-medium flex items-center gap-3">
-                    <i class="fa-solid fa-chart-bar w-5 text-center"></i> 資料整理與趨勢
+                <button onclick="showSection('home')" id="nav-home" class="nav-link active w-full text-left px-4 py-3 rounded-lg md:rounded-r-full text-sm font-medium flex items-center justify-between group">
+                    <span class="flex items-center gap-3"><i class="fa-solid fa-house w-5 text-center"></i> 首頁簡介</span>
+                    <i id="status-home" class="fa-solid fa-circle-check status-icon text-gray-200"></i>
                 </button>
-                <button onclick="showSection('part2-normal')" id="nav-part2-normal" class="nav-link w-full text-left px-4 py-3 rounded-lg md:rounded-r-full text-sm font-medium flex items-center gap-3">
-                    <i class="fa-solid fa-bell w-5 text-center"></i> 常態分配曲線
+                
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mt-4 mb-2 hidden md:block">課程篇章</p>
+                <button onclick="showSection('part1')" id="nav-part1" class="nav-link w-full text-left px-4 py-3 rounded-lg md:rounded-r-full text-sm font-medium flex items-center justify-between group">
+                    <span class="flex items-center gap-3"><i class="fa-solid fa-book-open w-5 text-center"></i> 第一篇: 概論與基礎</span>
+                    <div class="flex items-center gap-1">
+                        <i id="badge-part1" class="fa-solid fa-medal text-yellow-400 badge-icon hidden md:inline-block" title="已獲得精熟徽章"></i>
+                        <i id="status-part1" class="fa-solid fa-circle-check status-icon text-gray-200"></i>
+                    </div>
                 </button>
-
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 hidden md:block mt-6">第三篇：推論統計</p>
-                <button onclick="showSection('part3-sampling')" id="nav-part3-sampling" class="nav-link w-full text-left px-4 py-3 rounded-lg md:rounded-r-full text-sm font-medium flex items-center gap-3">
-                    <i class="fa-solid fa-filter w-5 text-center"></i> 抽樣與估計
+                <button onclick="showSection('part2')" id="nav-part2" class="nav-link w-full text-left px-4 py-3 rounded-lg md:rounded-r-full text-sm font-medium flex items-center justify-between group">
+                    <span class="flex items-center gap-3"><i class="fa-solid fa-chart-pie w-5 text-center"></i> 第二篇: 描述性統計</span>
+                    <div class="flex items-center gap-1">
+                        <i id="badge-part2" class="fa-solid fa-medal text-yellow-400 badge-icon hidden md:inline-block" title="已獲得精熟徽章"></i>
+                        <i id="status-part2" class="fa-solid fa-circle-check status-icon text-gray-200"></i>
+                    </div>
                 </button>
-                <button onclick="showSection('part3-infer')" id="nav-part3-infer" class="nav-link w-full text-left px-4 py-3 rounded-lg md:rounded-r-full text-sm font-medium flex items-center gap-3">
-                    <i class="fa-solid fa-magnifying-glass-chart w-5 text-center"></i> 假設檢定與分析
-                </button>
-
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 hidden md:block mt-6">自我評量</p>
-                <button onclick="showSection('quiz')" id="nav-quiz" class="nav-link w-full text-left px-4 py-3 rounded-lg md:rounded-r-full text-sm font-medium flex items-center gap-3 bg-indigo-50 text-indigo-700">
-                    <i class="fa-solid fa-pen-to-square w-5 text-center"></i> 主題綜合測驗
+                <button onclick="showSection('part3')" id="nav-part3" class="nav-link w-full text-left px-4 py-3 rounded-lg md:rounded-r-full text-sm font-medium flex items-center justify-between group">
+                    <span class="flex items-center gap-3"><i class="fa-solid fa-magnifying-glass-chart w-5 text-center"></i> 第三篇: 推論統計</span>
+                    <div class="flex items-center gap-1">
+                        <i id="badge-part3" class="fa-solid fa-medal text-yellow-400 badge-icon hidden md:inline-block" title="已獲得精熟徽章"></i>
+                        <i id="status-part3" class="fa-solid fa-circle-check status-icon text-gray-200"></i>
+                    </div>
                 </button>
             </div>
         </nav>
 
-        <!-- 主要內容顯示區 -->
-        <main class="flex-grow p-4 sm:p-6 lg:p-8 order-1 md:order-2">
+        <main class="flex-grow p-4 sm:p-6 lg:p-8 order-1 md:order-2 overflow-x-hidden">
             
-            <!-- 第一篇：概論與基礎 -->
-            <section id="part1-intro" class="section-container active">
-                <div class="mb-2"><span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full">第一篇：概論與基礎</span></div>
-                <h1 class="text-3xl sm:text-4xl font-bold text-dark mb-4">社會統計是什麼？</h1>
-                <p class="text-lg text-gray-600 mb-6">為什麼社會科學要學統計？社會統計幫助我們將複雜的人類行為與社會現象「量化」，透過數據來尋找規律，而不是只憑直覺或個人經驗。</p>
-                
-                <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 mb-8 border border-gray-100">
-                    <h3 class="text-xl font-bold text-primary mb-4 border-b pb-2">母體與樣本 (Population vs. Sample)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-gray-50 p-5 rounded-xl border border-gray-200">
-                            <h4 class="font-bold text-lg text-dark mb-2"><i class="fa-solid fa-users text-gray-500 mr-2"></i>母體 (Population)</h4>
-                            <p class="text-sm text-gray-700">我們感興趣的「所有」研究對象。實務上通常龐大到無法全部調查。</p>
-                            <div class="mt-3 bg-white p-3 rounded shadow-sm text-sm border-l-4 border-gray-400">
-                                <b>生活實例：</b>想知道「全台灣2300萬人」對某項政策的支持度，這2300萬人就是母體。
-                            </div>
-                        </div>
-                        <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-200">
-                            <h4 class="font-bold text-lg text-indigo-900 mb-2"><i class="fa-solid fa-user-group text-indigo-500 mr-2"></i>樣本 (Sample)</h4>
-                            <p class="text-sm text-gray-700">從母體中實際抽出來進行調查的一小部分人，用來代表母體。</p>
-                            <div class="mt-3 bg-white p-3 rounded shadow-sm text-sm border-l-4 border-indigo-400">
-                                <b>生活實例：</b>民調公司打電話訪問到的「1068位有效民眾」，這1068人就是樣本。
-                            </div>
-                        </div>
+            <!-- 首頁 -->
+            <section id="home" class="section-container active">
+                <div class="bg-white rounded-2xl shadow-sm p-8 sm:p-12 mb-8 border border-gray-100 text-center md:text-left flex flex-col md:flex-row items-center gap-8">
+                    <div class="flex-1">
+                        <span class="bg-indigo-100 text-primary text-sm font-bold px-3 py-1 rounded-full mb-4 inline-block">Social Statistics</span>
+                        <h1 class="text-3xl sm:text-5xl font-black text-dark mb-6 leading-tight">讓數據說話，<br>讀懂社會的真實面貌。</h1>
+                        <p class="text-lg text-gray-600 mb-8">本網站依照社會科學課程大綱設計，將抽象的統計學轉化為生動的生活實例與互動圖表。跟隨我們的腳步，從基礎概念到推論統計，一步步掌握量化研究的強大工具。</p>
+                        <button onclick="showSection('part1')" class="bg-primary text-white px-8 py-3 rounded-full hover:bg-indigo-800 transition font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            開始學習之旅 <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
                     </div>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
-                    <h3 class="text-xl font-bold text-primary mb-4 border-b pb-2">測量層次 (Levels of Measurement)</h3>
-                    <p class="text-gray-600 mb-4">在設計問卷與蒐集資料時，我們必須了解變數的「測量尺度」，這決定了後續能用什麼統計方法分析。</p>
-                    
-                    <div class="space-y-4">
-                        <div class="flex flex-col md:flex-row gap-4 items-stretch">
-                            <div class="flex-1 bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition">
-                                <h4 class="font-bold text-red-600 mb-1">1. 名義尺度 (Nominal)</h4>
-                                <p class="text-sm text-gray-600">僅作分類，沒有高低順序、不能加減。</p>
-                                <p class="text-sm mt-2 text-gray-500 italic"><i class="fa-solid fa-mug-hot"></i> 例如：你喜歡喝哪種茶？(1)紅茶 (2)綠茶 (3)烏龍茶。</p>
-                            </div>
-                            <div class="flex-1 bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition">
-                                <h4 class="font-bold text-orange-500 mb-1">2. 次序尺度 (Ordinal)</h4>
-                                <p class="text-sm text-gray-600">有高低順序，但間距不一定相等。</p>
-                                <p class="text-sm mt-2 text-gray-500 italic"><i class="fa-solid fa-medal"></i> 例如：手搖飲甜度(無糖、微糖、半糖、全糖) 或 教育程度。</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-col md:flex-row gap-4 items-stretch">
-                            <div class="flex-1 bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition">
-                                <h4 class="font-bold text-green-600 mb-1">3. 等距尺度 (Interval)</h4>
-                                <p class="text-sm text-gray-600">有順序且間距相等，但「沒有絕對的零點」(0不代表沒有)。可加減不可乘除。</p>
-                                <p class="text-sm mt-2 text-gray-500 italic"><i class="fa-solid fa-temperature-half"></i> 例如：攝氏溫度。0度不代表沒有溫度；20度也不是10度的「兩倍熱」。</p>
-                            </div>
-                            <div class="flex-1 bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition">
-                                <h4 class="font-bold text-blue-600 mb-1">4. 等比尺度 (Ratio)</h4>
-                                <p class="text-sm text-gray-600">最高層次！間距相等且有「絕對零點」。可做任何數學運算。</p>
-                                <p class="text-sm mt-2 text-gray-500 italic"><i class="fa-solid fa-sack-dollar"></i> 例如：月薪收入。0元代表真的沒錢；薪水4萬是2萬的兩倍。</p>
-                            </div>
-                        </div>
+                    <div class="flex-1 hidden md:flex justify-center">
+                        <i class="fa-solid fa-chart-column text-[180px] text-indigo-100 opacity-80"></i>
                     </div>
                 </div>
             </section>
 
-            <!-- 第二篇：描述性統計 (資料整理與趨勢) -->
-            <section id="part2-desc" class="section-container">
-                <div class="mb-2"><span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">第二篇：描述性統計</span></div>
-                <h2 class="text-3xl font-bold text-dark mb-6">資料整理與趨勢測量</h2>
+            <section id="part1" class="section-container">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-primary"><i class="fa-solid fa-book-open"></i></div>
+                    <h2 class="text-3xl font-black text-dark">第一篇：概論與基礎</h2>
+                </div>
                 
-                <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 mb-8 border border-gray-100">
-                    <h3 class="text-xl font-bold text-primary mb-4 border-b pb-2">從雜亂數據到一目了然</h3>
-                    <p class="text-gray-600 mb-4">描述性統計幫助我們將龐大的問卷資料化約為幾個關鍵數字或圖表。我們最關心資料的<b>集中趨勢</b>與<b>離散程度</b>。</p>
-                    
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
-                        <!-- 集中趨勢 -->
-                        <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fa-solid fa-compress text-6xl"></i></div>
-                            <h4 class="font-bold text-lg text-dark mb-3">集中趨勢 (Central Tendency)</h4>
-                            <p class="text-sm text-gray-600 mb-4">尋找資料的「中心代表值」。</p>
-                            <ul class="space-y-3 relative z-10">
-                                <li class="bg-white p-3 rounded shadow-sm border border-gray-100">
-                                    <span class="font-bold text-indigo-700">平均數 (Mean):</span> 全部加總除以人數。<br>
-                                    <span class="text-xs text-red-500"><i class="fa-solid fa-triangle-exclamation"></i> 缺點：極易受極端值影響。</span>
-                                </li>
-                                <li class="bg-white p-3 rounded shadow-sm border border-gray-100">
-                                    <span class="font-bold text-indigo-700">中位數 (Median):</span> 由小排到大，最中間的那個人。<br>
-                                    <span class="text-xs text-green-600"><i class="fa-solid fa-check"></i> 優點：不受極端值影響。</span>
-                                </li>
-                                <li class="bg-white p-3 rounded shadow-sm border border-gray-100">
-                                    <span class="font-bold text-indigo-700">眾數 (Mode):</span> 出現最多次的數值。
-                                </li>
-                            </ul>
-                        </div>
-                        
-                        <!-- 離散程度 -->
-                        <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fa-solid fa-expand text-6xl"></i></div>
-                            <h4 class="font-bold text-lg text-dark mb-3">離散程度 (Dispersion)</h4>
-                            <p class="text-sm text-gray-600 mb-4">了解資料的「分散或差異狀況」。</p>
-                            <ul class="space-y-3 relative z-10">
-                                <li class="bg-white p-3 rounded shadow-sm border border-gray-100">
-                                    <span class="font-bold text-emerald-700">全距 (Range):</span> 最大值減最小值。
-                                </li>
-                                <li class="bg-white p-3 rounded shadow-sm border border-gray-100">
-                                    <span class="font-bold text-emerald-700">變異數 (Variance):</span> 數值與平均數差異平方的平均。
-                                </li>
-                                <li class="bg-white p-3 rounded shadow-sm border border-gray-100">
-                                    <span class="font-bold text-emerald-700">標準差 (Standard Deviation):</span> 變異數開根號。最常使用的離散指標，數字越大代表差異越大。
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                <!-- 新增：第一篇 學習目標 -->
+                <div class="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-2xl border border-indigo-100 mb-6 shadow-sm">
+                    <h4 class="text-lg font-bold text-indigo-900 mb-2"><i class="fa-solid fa-bullseye text-indigo-500 mr-2"></i>本階段學習目標</h4>
+                    <p class="text-sm text-indigo-800 mb-3">本階段將帶領你建立「統計思維」，理解為什麼社會科學研究需要量化工具。學完本篇後，你將能夠：</p>
+                    <ul class="text-sm text-indigo-700 space-y-2 font-medium">
+                        <li><i class="fa-solid fa-check text-indigo-400 mr-2"></i>清楚分辨「母體」與「樣本」的差異。</li>
+                        <li><i class="fa-solid fa-check text-indigo-400 mr-2"></i>正確判斷變數的「測量層次」(名義/次序/等距/等比)。</li>
+                        <li><i class="fa-solid fa-check text-indigo-400 mr-2"></i>了解問卷設計的核心靈魂：「信度」與「效度」。</li>
+                    </ul>
                 </div>
 
-                <!-- 互動圖表：極端值的影響 -->
-                <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
-                    <h3 class="text-xl font-bold text-primary mb-2">生活實例演示：為什麼新聞常報「薪資中位數」？</h3>
-                    <p class="text-sm text-gray-500 mb-4">假設一間麵店裡有 5 位一般上班族。這時，**首富郭董事長**走進了這家麵店！請點擊「加入首富」按鈕，觀察誰被拉高了？</p>
-                    
-                    <div class="flex flex-col lg:flex-row gap-6">
-                        <div class="w-full lg:w-2/3 h-64 sm:h-80 relative">
-                            <canvas id="centralTendencyChart"></canvas>
-                        </div>
-                        <div class="w-full lg:w-1/3 flex flex-col justify-center bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">店內客人的月薪 (萬):</label>
-                                <div id="dataDisplay" class="text-lg font-mono bg-white px-3 py-2 rounded border border-gray-300 break-words h-20 overflow-y-auto"></div>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div class="bg-indigo-100 p-3 rounded-lg text-center shadow-inner">
-                                    <span class="block text-xs text-indigo-800 font-bold uppercase">平均數</span>
-                                    <span id="meanValue" class="block text-2xl font-bold text-indigo-900 mt-1">-</span>
+                <div class="space-y-6">
+                    <!-- 第1章 -->
+                    <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
+                        <h3 class="text-xl font-bold text-dark mb-4 pb-2 border-b-2 border-gray-100"><span class="text-primary mr-2">第1章</span>緒論與基本的統計概念</h3>
+                        
+                        <!-- 新增：統計與社會科學基礎 -->
+                        <div class="mb-6 border-b border-gray-100 pb-6">
+                            <h4 class="font-bold text-lg text-gray-800 mb-3"><i class="fa-solid fa-calculator text-primary mr-2"></i>統計學的意義與兩大分支</h4>
+                            <p class="text-gray-600 mb-4"><strong>統計學</strong>不只是繁雜的數字計算，它是一門教我們如何「蒐集、整理、分析與解釋資料」，並在充滿不確定性的社會中做出科學決策的學問。在應用上，主要分為兩大領域：</p>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100">
+                                    <h5 class="font-bold text-indigo-800 mb-1">1. 敘述統計 (Descriptive Statistics)</h5>
+                                    <p class="text-sm text-gray-700"><strong>「看圖說故事」</strong>：專注於將已經蒐集到的資料進行整理、化約與呈現（如畫出直方圖、計算平均數）。它只對「手邊現有的這群數據」負責，不隨便延伸推論。</p>
                                 </div>
-                                <div class="bg-emerald-100 p-3 rounded-lg text-center shadow-inner">
-                                    <span class="block text-xs text-emerald-800 font-bold uppercase">中位數</span>
-                                    <span id="medianValue" class="block text-2xl font-bold text-emerald-900 mt-1">-</span>
+                                <div class="bg-orange-50 p-4 rounded-xl border border-orange-100">
+                                    <h5 class="font-bold text-orange-800 mb-1">2. 推論統計 (Inferential Statistics)</h5>
+                                    <p class="text-sm text-gray-700"><strong>「見微知著」</strong>：透過從小部分人（樣本）身上收集到的數據，運用機率理論，去推測及檢定廣大群眾（母體）的真實現象（如選舉民調預測）。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8 border-b border-gray-100 pb-6">
+                            <h4 class="font-bold text-lg text-gray-800 mb-4"><i class="fa-solid fa-earth-asia text-primary mr-2"></i>社會科學研究的基礎思維</h4>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <!-- 目的 -->
+                                <div class="bg-slate-50 p-5 rounded-xl border border-gray-200 hover:shadow-sm transition">
+                                    <h5 class="font-bold text-gray-800 mb-3 border-b pb-2">🎯 研究的目的</h5>
+                                    <ul class="text-sm text-gray-600 space-y-2">
+                                        <li><strong class="text-gray-800">探索 (Exploration):</strong> 對未知議題進行初步了解。</li>
+                                        <li><strong class="text-gray-800">描述 (Description):</strong> 客觀描繪現象的樣貌 (如人口普查)。</li>
+                                        <li><strong class="text-gray-800">解釋 (Explanation):</strong> 尋找因果關係 (為什麼會這樣？)。</li>
+                                        <li><strong class="text-gray-800">預測 (Prediction):</strong> 根據過往規律推估未來。</li>
+                                    </ul>
+                                </div>
+                                <!-- 理論建構 -->
+                                <div class="bg-slate-50 p-5 rounded-xl border border-gray-200 hover:shadow-sm transition">
+                                    <h5 class="font-bold text-gray-800 mb-3 border-b pb-2">🏗️ 理論建構方法</h5>
+                                    <ul class="text-sm text-gray-600 space-y-3">
+                                        <li><span class="font-bold text-indigo-600 block mb-1">歸納法 (Induction):</span> 由下而上。觀察許多個別現象與資料後，總結出一個普遍理論。</li>
+                                        <li><span class="font-bold text-indigo-600 block mb-1">演繹法 (Deduction):</span> 由上而下。從既有理論出發，建立研究假設，再收集資料來檢驗假設。</li>
+                                    </ul>
+                                </div>
+                                <!-- 研究方法 -->
+                                <div class="bg-slate-50 p-5 rounded-xl border border-gray-200 hover:shadow-sm transition">
+                                    <h5 class="font-bold text-gray-800 mb-3 border-b pb-2">🔬 兩大研究方法</h5>
+                                    <ul class="text-sm text-gray-600 space-y-3">
+                                        <li><span class="font-bold text-emerald-600 block mb-1">質化研究 (Qualitative):</span> 重視意義與脈絡，常以深度訪談或觀察進行，資料為文字。</li>
+                                        <li><span class="font-bold text-orange-600 block mb-1">量化研究 (Quantitative):</span> 重視變數間的關聯與規律，常以問卷收集，資料為數字。</li>
+                                    </ul>
+                                    <div class="mt-3 bg-yellow-100 text-yellow-800 text-xs p-2 rounded font-bold text-center">
+                                        ※本網站「社會統計」即是量化研究的核心工具！
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <h4 class="font-bold text-lg text-gray-800 mb-2">母體 (Population) vs 樣本 (Sample)</h4>
+                                <p class="text-gray-600 mb-2">社會科學研究通常無法普查所有人，因此我們從「母體」中抽取「樣本」來進行研究。</p>
+                                <div class="bg-example p-4 rounded-lg example-box">
+                                    <p class="text-sm text-gray-700"><strong>💡 生活實例：</strong><br>想知道「全台灣大學生（母體）」對某政策的看法，但無法詢問每一位，所以隨機抽出「1000名大學生（樣本）」進行調查。</p>
                                 </div>
                             </div>
                             
-                            <div class="flex gap-2">
-                                <input type="number" id="newDataInput" placeholder="輸入薪資(萬)" class="flex-grow px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                                <button id="addDataBtn" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition font-medium">加入</button>
-                            </div>
-                            <div class="mt-2 flex flex-col gap-2">
-                                <button id="addExtremeHighBtn" class="w-full bg-red-500 text-white font-bold px-3 py-2 rounded-lg shadow hover:bg-red-600 transition flex justify-center items-center gap-2">
-                                    <i class="fa-solid fa-user-tie"></i> 郭董走進麵店 (加入極大值 500萬)
-                                </button>
-                                <button id="resetDataBtn" class="w-full bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm hover:bg-gray-300 transition">清場重設</button>
+                            <div>
+                                <h4 class="font-bold text-lg text-gray-800 mb-2">測量層次 (Levels of Measurement)</h4>
+                                <ul class="space-y-2 text-sm text-gray-600">
+                                    <li><span class="font-bold text-indigo-600">1. 名義尺度 (Nominal):</span> 僅作分類，無大小之分。(例：性別、血型、宗教)</li>
+                                    <li><span class="font-bold text-indigo-600">2. 次序尺度 (Ordinal):</span> 有順序或等級，但差距不一定相等。(例：教育程度、滿意度排行)</li>
+                                    <li><span class="font-bold text-indigo-600">3. 等距尺度 (Interval):</span> 差距有意義，但沒有「絕對的零」。(例：溫度、IQ智商)</li>
+                                    <li><span class="font-bold text-indigo-600">4. 等比尺度 (Ratio):</span> 差距有意義，且有「絕對的零」，可計算倍數。(例：收入、身高、體重)</li>
+                                </ul>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </section>
 
-            <!-- 第二篇：描述性統計 (常態分配) -->
-            <section id="part2-normal" class="section-container">
-                <div class="mb-2"><span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">第二篇：描述性統計</span></div>
-                <h2 class="text-3xl font-bold text-dark mb-6">常態分配 (Normal Curve)</h2>
-                
-                <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 mb-8 border border-gray-100">
-                    <h3 class="text-xl font-bold text-primary mb-4 border-b pb-2">社會科學中最優美的鐘型曲線</h3>
-                    <div class="flex flex-col md:flex-row gap-6 items-center">
-                        <div class="w-full md:w-1/2">
-                            <p class="text-gray-600 mb-4">在社會中，許多特質（如成年男性的身高、智商測驗分數、學測成績）都呈現特定的分佈：<b>大多數人集中在平均值附近，而極端高或極端低的人很少</b>。這形成了對稱的鐘型，稱為常態分配。</p>
-                            
-                            <h4 class="font-bold text-dark mb-2">Z分數 (Z-score) 的功用：</h4>
-                            <p class="text-sm text-gray-600 mb-4">Z分數表示「某個數值距離平均數有幾個標準差」。有了Z分數，我們就能把不同尺度的考試拿來公平比較（例如：國文考80分跟數學考70分，哪個表現相對較好？看Z分數就知道）。</p>
-                        </div>
-                        <div class="w-full md:w-1/2 bg-blue-50 p-5 rounded-xl border border-blue-100 shadow-sm">
-                            <h4 class="font-bold text-blue-800 mb-3 text-center border-b border-blue-200 pb-2">經驗法則 (68-95-99.7 法則)</h4>
-                            <p class="text-sm text-gray-700 mb-3">若資料呈常態分配：</p>
-                            <ul class="text-sm space-y-3 font-medium text-gray-700">
-                                <li class="flex items-center"><span class="w-12 text-center text-blue-500 font-bold bg-blue-100 rounded mr-3 py-1">68%</span> 的資料落在平均數 ± 1個標準差內。</li>
-                                <li class="flex items-center"><span class="w-12 text-center text-blue-600 font-bold bg-blue-200 rounded mr-3 py-1">95%</span> 的資料落在平均數 ± 2個標準差內。</li>
-                                <li class="flex items-center"><span class="w-12 text-center text-blue-800 font-bold bg-blue-300 rounded mr-3 py-1">99.7%</span> 的資料落在平均數 ± 3個標準差內。</li>
+                        <!-- 擴充說明：變數 -->
+                        <div class="mt-6 border-t border-gray-100 pt-6">
+                            <h4 class="font-bold text-lg text-gray-800 mb-2">變數的種類 (Variables)</h4>
+                            <p class="text-gray-600 mb-2">研究中最常探討變數之間的因果關係，我們通常將其分為兩大類：</p>
+                            <ul class="space-y-2 text-sm text-gray-600">
+                                <li><span class="font-bold text-indigo-600">自變數 (Independent Variable, IV):</span> 代表「原因」，是研究者主動操弄或觀察的前提條件。(例如：每週讀書時間)</li>
+                                <li><span class="font-bold text-indigo-600">依變數 (Dependent Variable, DV):</span> 代表「結果」，是受自變數影響而發生改變的目標數值。(例如：期末考成績)</li>
                             </ul>
                         </div>
                     </div>
-                </div>
 
-                <!-- 互動圖表：調整常態分配參數 -->
-                <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
-                    <h3 class="text-xl font-bold text-primary mb-2">互動演示：玩轉鐘型曲線</h3>
-                    <p class="text-sm text-gray-500 mb-6">滑動下方的拉桿，觀察改變「平均數 (中心點)」和「標準差 (分散程度)」對鐘型曲線的影響。</p>
-                    
-                    <div class="flex flex-col lg:flex-row gap-8 items-center">
-                        <div class="w-full lg:w-1/3 space-y-6 bg-gray-50 p-6 rounded-xl border border-gray-200">
-                            <div>
-                                <label for="meanSlider" class="block text-sm font-medium text-gray-700 mb-2 flex justify-between">
-                                    <span>平均數 (Mean)</span>
-                                    <span id="meanDisplay" class="font-bold text-indigo-600">0</span>
-                                </label>
-                                <input type="range" id="meanSlider" min="-5" max="5" step="0.5" value="0" class="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-primary">
-                                <p class="text-xs text-gray-500 mt-1">控制曲線的左右移動 (位置)。</p>
+                    <!-- 第2章 -->
+                    <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
+                        <h3 class="text-xl font-bold text-dark mb-4 pb-2 border-b-2 border-gray-100"><span class="text-primary mr-2">第2章</span>問卷設計與資料蒐集實務</h3>
+                        <p class="text-gray-600 mb-4">量化研究極度依賴精確的資料。問卷是社會科學最常見的資料蒐集工具。一份能夠收集到高品質數據的問卷，必須具備兩個最重要的靈魂：<strong>信度</strong>與<strong>效度</strong>。</p>
+                        
+                        <!-- 擴充說明：信度與效度 -->
+                        <div class="mb-6 grid md:grid-cols-2 gap-4">
+                            <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
+                                <h4 class="font-bold text-blue-800 mb-2"><i class="fa-solid fa-ruler-combined text-blue-500 mr-2"></i>信度 (Reliability)</h4>
+                                <p class="text-sm text-gray-700 mb-1"><strong>關鍵字：一致性、穩定性</strong></p>
+                                <p class="text-sm text-gray-600 mb-3">指的是測量工具在不同時間重複測量，是否能得到相同的結果。</p>
+                                <div class="bg-white p-3 rounded shadow-sm text-sm border-l-4 border-blue-400">
+                                    <strong>💡 生活實例：</strong><br>一台體重計故障了，每次站上去都比實際重5公斤。連續量三次數字都一樣，這代表它非常「穩定」(<strong>高信度</strong>)，但它並不準確。
+                                </div>
                             </div>
-                            
-                            <div>
-                                <label for="stdDevSlider" class="block text-sm font-medium text-gray-700 mb-2 flex justify-between">
-                                    <span>標準差 (Std Dev)</span>
-                                    <span id="stdDevDisplay" class="font-bold text-emerald-600">1</span>
-                                </label>
-                                <input type="range" id="stdDevSlider" min="0.5" max="3" step="0.1" value="1" class="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-secondary">
-                                <p class="text-xs text-gray-500 mt-1">控制曲線的高低寬窄。數字越大代表大家分數差異越大，曲線越平坦。</p>
+                            <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
+                                <h4 class="font-bold text-emerald-800 mb-2"><i class="fa-solid fa-bullseye text-emerald-500 mr-2"></i>效度 (Validity)</h4>
+                                <p class="text-sm text-gray-700 mb-1"><strong>關鍵字：準確性、真實性</strong></p>
+                                <p class="text-sm text-gray-600 mb-3">指的是測量工具是否真的測量到了「你想測量的目標概念」。</p>
+                                <div class="bg-white p-3 rounded shadow-sm text-sm border-l-4 border-emerald-400">
+                                    <strong>💡 生活實例：</strong><br>老師想測驗學生的「英文會話」，卻發了一張「文法選擇題」當考卷。這份考卷的<strong>效度極低</strong>，因為它測不到真實的會話實力。
+                                </div>
                             </div>
+                        </div>
+
+                        <div class="bg-example p-4 rounded-lg example-box mb-4">
+                            <p class="text-sm text-gray-700"><strong>💡 生活實例 (編碼邏輯)：</strong><br>在問卷中我們常將文字轉為數字以利統計軟體分析，例如設定李克特量表：非常不同意=1, 不同意=2, 普通=3, 同意=4, 非常同意=5。這就是將質化感受轉為量化數據的過程。</p>
                         </div>
                         
-                        <div class="w-full lg:w-2/3 h-64 sm:h-80 relative">
-                            <canvas id="normalDistChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 第三篇：推論統計 (抽樣與估計) -->
-            <section id="part3-sampling" class="section-container">
-                <div class="mb-2"><span class="bg-orange-100 text-orange-800 text-xs font-bold px-3 py-1 rounded-full">第三篇：推論統計</span></div>
-                <h2 class="text-3xl font-bold text-dark mb-6">抽樣方法與母體估計</h2>
-                
-                <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 mb-8 border border-gray-100">
-                    <h3 class="text-xl font-bold text-primary mb-4 border-b pb-2">為什麼不直接普查？</h3>
-                    <p class="text-gray-600 mb-6">要訪問全台灣所有人（普查）太貴、太慢了！因此我們使用「抽樣」，從母體中隨機挑選少數人。<b>只要抽樣方法科學，樣本的結果就能推估母體（這就是參數估計）。</b></p>
-                    
-                    <h4 class="font-bold text-lg text-dark mb-3">生活常見的機率抽樣方法：</h4>
-                    <p class="text-sm text-gray-600 mb-4">母體中每個個體被抽中的機率是已知且不為零的。這種方法才能客觀計算誤差，並將結果推論回母體。</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-blue-50 rounded-xl p-5 border border-blue-100">
-                            <h5 class="font-bold text-blue-800 mb-2"><i class="fa-solid fa-dice text-blue-500 mr-2"></i>簡單隨機抽樣 (Simple Random)</h5>
-                            <p class="text-sm text-gray-700">完全靠機率，每個人被抽中的機率都相等。就像把所有人名字放進箱子裡抽籤。</p>
-                        </div>
-                        <div class="bg-green-50 rounded-xl p-5 border border-green-100">
-                            <h5 class="font-bold text-green-800 mb-2"><i class="fa-solid fa-list-ol text-green-500 mr-2"></i>系統抽樣 (Systematic)</h5>
-                            <p class="text-sm text-gray-700">決定好起點後，每隔固定間隔抽一人。例如：學號每隔10號抽一位同學。</p>
-                        </div>
-                        <div class="bg-purple-50 rounded-xl p-5 border border-purple-100">
-                            <h5 class="font-bold text-purple-800 mb-2"><i class="fa-solid fa-layer-group text-purple-500 mr-2"></i>分層抽樣 (Stratified)</h5>
-                            <p class="text-sm text-gray-700">先依特徵(如：北中南東)分「層」，再從每層抽特定比例。<br><span class="bg-purple-200 text-purple-900 px-1 rounded font-bold text-xs mt-1 inline-block">口訣：層間異、層內同</span></p>
-                        </div>
-                        <div class="bg-orange-50 rounded-xl p-5 border border-orange-100">
-                            <h5 class="font-bold text-orange-800 mb-2"><i class="fa-solid fa-cubes text-orange-500 mr-2"></i>叢集抽樣 (Cluster)</h5>
-                            <p class="text-sm text-gray-700">把母體分成許多小群體(如：各個班級)，隨機抽幾個班級，對該班所有人普查。<br><span class="bg-orange-200 text-orange-900 px-1 rounded font-bold text-xs mt-1 inline-block">口訣：叢集間同、叢集內異</span></p>
-                        </div>
-                    </div>
-
-                    <!-- 新增非機率抽樣區塊 -->
-                    <h4 class="font-bold text-lg text-dark mt-8 mb-3 border-t pt-6">另一種選擇：非機率抽樣 (Non-probability Sampling)</h4>
-                    <p class="text-sm text-gray-600 mb-4">無法確知母體中每個人被抽中的機率，通常由研究者主觀挑選，或看誰方便就挑誰。雖然<b>不能用來做嚴謹的母體推論</b>，但在探索性研究、質性訪談、或是特定難以接觸的族群研究中非常實用。</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
-                            <h5 class="font-bold text-slate-800 mb-2"><i class="fa-solid fa-person-walking text-slate-500 mr-2"></i>便利抽樣 (Convenience)</h5>
-                            <p class="text-sm text-gray-700">就近選取最容易接觸到的對象進行調查。<br><span class="text-xs text-gray-500 block mt-2">💡 實例：記者在火車站門口隨機攔截路人進行訪問。</span></p>
-                        </div>
-                        <div class="bg-rose-50 rounded-xl p-5 border border-rose-200">
-                            <h5 class="font-bold text-rose-800 mb-2"><i class="fa-solid fa-user-graduate text-rose-500 mr-2"></i>立意/判斷抽樣 (Purposive)</h5>
-                            <p class="text-sm text-gray-700">研究者依據自己的主觀判斷與專業知識，挑選「最能提供有用資訊」的對象。<br><span class="text-xs text-gray-500 block mt-2">💡 實例：研究青少年犯罪，直接挑選 5 位資深輔導社工進行深度訪談。</span></p>
-                        </div>
-                        <div class="bg-cyan-50 rounded-xl p-5 border border-cyan-200">
-                            <h5 class="font-bold text-cyan-800 mb-2"><i class="fa-solid fa-snowflake text-cyan-500 mr-2"></i>雪球抽樣 (Snowball)</h5>
-                            <p class="text-sm text-gray-700">先找到少數符合條件的受訪者，再請他們透過自己的人脈推薦其他人。<br><span class="text-xs text-gray-500 block mt-2">💡 實例：研究罕見疾病患者的心理狀況，透過一位病友介紹其他病友。</span></p>
-                        </div>
-                        <div class="bg-teal-50 rounded-xl p-5 border border-teal-200">
-                            <h5 class="font-bold text-teal-800 mb-2"><i class="fa-solid fa-chart-pie text-teal-500 mr-2"></i>配額抽樣 (Quota)</h5>
-                            <p class="text-sm text-gray-700">先設定好不同特徵的樣本數配額(例如男女各50名)，接著調查員用「便利」的方式湊滿這些人數為止(缺乏隨機性)。<br><span class="text-xs text-gray-500 block mt-2">💡 實例：市場調查員被規定要訪問 30 位大學生與 30 位上班族。</span></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 互動圖表：抽樣方法模擬 -->
-                <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-xl font-bold text-primary">互動演示：機率抽樣模擬器</h3>
-                        <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full">目標樣本數：10人</span>
-                    </div>
-                    <p class="text-sm text-gray-500 mb-6">假設右方是 50 人的母體，每一橫列（不同顏色）代表不同群體。點擊按鈕，觀察不同抽樣法的選人模式。</p>
-                    
-                    <div class="flex flex-col lg:flex-row gap-8">
-                        <div class="w-full lg:w-1/4 flex flex-col gap-3">
-                            <button onclick="simulateSampling('srs')" class="bg-white border-2 border-blue-400 text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-lg font-bold transition flex items-center justify-between">
-                                <span>簡單隨機抽樣</span> <i class="fa-solid fa-play text-xs opacity-50"></i>
-                            </button>
-                            <button onclick="simulateSampling('sys')" class="bg-white border-2 border-green-400 text-green-700 hover:bg-green-50 px-4 py-2 rounded-lg font-bold transition flex items-center justify-between">
-                                <span>系統抽樣 (k=5)</span> <i class="fa-solid fa-play text-xs opacity-50"></i>
-                            </button>
-                            <button onclick="simulateSampling('str')" class="bg-white border-2 border-purple-400 text-purple-700 hover:bg-purple-50 px-4 py-2 rounded-lg font-bold transition flex items-center justify-between">
-                                <span>分層抽樣</span> <i class="fa-solid fa-play text-xs opacity-50"></i>
-                            </button>
-                            <button onclick="simulateSampling('clu')" class="bg-white border-2 border-orange-400 text-orange-700 hover:bg-orange-50 px-4 py-2 rounded-lg font-bold transition flex items-center justify-between">
-                                <span>叢集抽樣</span> <i class="fa-solid fa-play text-xs opacity-50"></i>
-                            </button>
-                            <div class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200 text-center">
-                                <span class="block text-sm text-gray-500 mb-1">目前抽取人數</span>
-                                <span id="sample-count" class="text-primary font-black text-3xl">0</span>
-                                <span class="text-gray-400 font-bold">/ 50</span>
-                            </div>
-                            <button onclick="resetSampling()" class="mt-2 text-gray-500 hover:text-gray-800 text-sm underline transition">重置母體</button>
-                        </div>
-                        <div class="w-full lg:w-3/4">
-                            <!-- 母體方格 -->
-                            <div id="population-grid" class="grid grid-cols-5 sm:grid-cols-10 gap-2 bg-gray-50 p-4 sm:p-6 rounded-xl border border-gray-200">
-                                <!-- 由 JS 動態生成 -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 第三篇：推論統計 (假設檢定與進階分析) -->
-            <section id="part3-infer" class="section-container">
-                <div class="mb-2"><span class="bg-orange-100 text-orange-800 text-xs font-bold px-3 py-1 rounded-full">第三篇：推論統計</span></div>
-                <h2 class="text-3xl font-bold text-dark mb-6">假設檢定與統計分析</h2>
-                
-                <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 mb-8 border border-gray-100">
-                    <h3 class="text-xl font-bold text-primary mb-4 border-b pb-2">法庭上的統計學：假設檢定 (Hypothesis Testing)</h3>
-                    <p class="text-gray-600 mb-6">做研究就像在法庭上打官司。統計學家預設「被告無罪 (無差異)」，只有當我們提出非常強烈的數據證據時，才能推翻預設，宣判「有罪 (有顯著差異)」。</p>
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-start p-4 bg-gray-100 rounded-lg">
-                            <div class="flex-shrink-0 mt-1">
-                                <span class="inline-flex items-center justify-center h-7 w-7 rounded-full bg-gray-400 text-white font-bold">H₀</span>
-                            </div>
-                            <div class="ml-3">
-                                <h4 class="font-bold text-gray-800">虛無假設 (Null Hypothesis)</h4>
-                                <p class="text-sm text-gray-600 mt-1">預設情況。代表「沒有差異」、「沒有效果」、「沒有關聯」。</p>
-                                <p class="text-xs text-gray-500 mt-1 italic">例：新藥對感冒「沒有」療效。</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start p-4 bg-primary bg-opacity-10 rounded-lg">
-                            <div class="flex-shrink-0 mt-1">
-                                <span class="inline-flex items-center justify-center h-7 w-7 rounded-full bg-primary text-white font-bold">H₁</span>
-                            </div>
-                            <div class="ml-3">
-                                <h4 class="font-bold text-indigo-900">對立假設 (Alternative Hypothesis)</h4>
-                                <p class="text-sm text-gray-700 mt-1">研究者真正想證明的狀況。代表「有差異」、「有效果」、「有關聯」。</p>
-                                <p class="text-xs text-indigo-600 mt-1 italic">例：新藥對感冒「有」顯著療效。</p>
-                            </div>
-                        </div>
-
-                        <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200 mt-4">
-                            <h4 class="font-bold text-yellow-800 mb-2"><i class="fa-solid fa-gavel mr-2"></i> 判決標準：P值 (p-value)</h4>
-                            <p class="text-sm text-gray-700">P值是「在 H₀ 為真的情況下，得到我們這種數據結果的機率」。</p>
-                            <ul class="list-disc list-inside text-sm text-gray-600 ml-2 mt-2 font-medium">
-                                <li>如果 <b class="text-red-600">P < 0.05</b>：機率太低了！拒絕 H₀，結論為「有顯著差異/效果」。</li>
-                                <li>如果 <b class="text-gray-600">P ≥ 0.05</b>：證據不足，不拒絕 H₀，結論為「無顯著差異」。</li>
+                        <!-- 擴充說明：問卷設計地雷 -->
+                        <div class="mt-4">
+                            <h4 class="font-bold text-gray-800 mb-2">🚫 問卷設計常見的「地雷」</h4>
+                            <ul class="space-y-2 text-sm text-gray-600">
+                                <li><span class="font-bold text-red-600">1. 雙重問題 (Double-barreled Questions):</span> 一題裡面問了兩件事，讓填答者不知如何回答。(例：「您對政府的經濟與環保政策滿意嗎？」若對經濟滿意、對環保不滿意，該怎麼選？應拆成兩題)</li>
+                                <li><span class="font-bold text-red-600">2. 引導性用語 (Leading Questions):</span> 題目本身帶有立場或暗示，迫使受訪者選擇特定答案。(例：「多數專家都認為吸菸有害健康，您也這麼認為嗎？」會導致數據失真)</li>
                             </ul>
                         </div>
                     </div>
-                </div>
 
-                <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
-                    <h3 class="text-xl font-bold text-primary mb-4 border-b pb-2">我們該用哪種檢定方法？</h3>
-                    <p class="text-gray-600 mb-6">根據你要比較變數類型與群體數量，對應的統計武器也不同：</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border-l-4 border-blue-500 bg-white p-4 rounded shadow-sm">
-                            <h4 class="font-bold text-blue-800 text-lg">t 檢定 (t-test)</h4>
-                            <p class="text-sm text-gray-600 mt-1">用途：比較 <b class="text-blue-600">兩個群體</b> 的平均數差異。</p>
-                            <div class="mt-2 text-xs text-gray-500 bg-gray-50 p-2 rounded">
-                                <b>生活問題：</b>男女薪資是否有顯著差異？
-                            </div>
-                        </div>
-                        <div class="border-l-4 border-green-500 bg-white p-4 rounded shadow-sm">
-                            <h4 class="font-bold text-green-800 text-lg">變異數分析 (ANOVA)</h4>
-                            <p class="text-sm text-gray-600 mt-1">用途：比較 <b class="text-green-600">三個或以上群體</b> 的平均數差異。</p>
-                            <div class="mt-2 text-xs text-gray-500 bg-gray-50 p-2 rounded">
-                                <b>生活問題：</b>北部、中部、南部的大學生，生活費花費是否不同？
-                            </div>
-                        </div>
-                        <div class="border-l-4 border-purple-500 bg-white p-4 rounded shadow-sm">
-                            <h4 class="font-bold text-purple-800 text-lg">卡方檢定 (Chi-Square)</h4>
-                            <p class="text-sm text-gray-600 mt-1">用途：分析兩個 <b class="text-purple-600">類別變數</b> 之間是否獨立/有關聯。</p>
-                            <div class="mt-2 text-xs text-gray-500 bg-gray-50 p-2 rounded">
-                                <b>生活問題：</b>政黨傾向(藍/綠/白) 與 居住地區 是否有關聯？
-                            </div>
-                        </div>
-                        <div class="border-l-4 border-orange-500 bg-white p-4 rounded shadow-sm">
-                            <h4 class="font-bold text-orange-800 text-lg">相關與線性迴歸 (Regression)</h4>
-                            <p class="text-sm text-gray-600 mt-1">用途：找尋關聯性，並建立 <b class="text-orange-600">因果預測模型</b>。</p>
-                            <div class="mt-2 text-xs text-gray-500 bg-gray-50 p-2 rounded">
-                                <b>生活問題：</b>讀書時間每增加1小時，考試成績預計會提高幾分？
-                            </div>
-                        </div>
+                    <!-- 測驗按鈕 -->
+                    <div class="text-center pt-4">
+                        <button onclick="startQuiz('part1')" class="bg-accent text-white px-8 py-3 rounded-xl hover:bg-yellow-600 transition font-bold shadow-md inline-flex items-center">
+                            <i class="fa-solid fa-pen-to-square mr-2"></i> 進行第一篇小測驗 (涵蓋第1-2章，共8題)
+                        </button>
                     </div>
                 </div>
             </section>
 
-            <!-- 測驗與練習區塊 -->
-            <section id="quiz" class="section-container">
-                <div class="mb-2"><span class="bg-gray-200 text-gray-700 text-xs font-bold px-3 py-1 rounded-full"><i class="fa-solid fa-pen-to-square"></i> 綜合自我評量</span></div>
-                <h2 class="text-3xl font-bold text-dark mb-6">主題測驗</h2>
+            <section id="part2" class="section-container">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-secondary"><i class="fa-solid fa-chart-pie"></i></div>
+                    <h2 class="text-3xl font-black text-dark">第二篇：描述性統計</h2>
+                </div>
                 
-                <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100 max-w-3xl mx-auto">
-                    
-                    <!-- 測驗主題選擇區 -->
-                    <div id="quiz-selection-screen" class="text-center py-6">
-                        <i class="fa-solid fa-clipboard-list text-6xl text-primary mb-4"></i>
-                        <h3 class="text-2xl font-bold text-dark mb-2">請選擇要測驗的範圍</h3>
-                        <p class="text-gray-500 mb-8">每個主題包含 10 道精選單選題，考驗您的核心概念。</p>
+                <!-- 新增：第二篇 學習目標 (取代原本簡單的一句話) -->
+                <div class="bg-gradient-to-r from-teal-50 to-emerald-50 p-6 rounded-2xl border border-teal-100 mb-6 shadow-sm">
+                    <h4 class="text-lg font-bold text-teal-900 mb-2"><i class="fa-solid fa-bullseye text-teal-500 mr-2"></i>本階段學習目標</h4>
+                    <p class="text-sm text-teal-800 mb-3">這個部分專注於「如何整理與呈現已有的資料」，讓繁雜的數據變得一目了然。學完本篇後，你將能夠：</p>
+                    <ul class="text-sm text-teal-700 space-y-2 font-medium">
+                        <li><i class="fa-solid fa-check text-teal-400 mr-2"></i>針對不同資料類型，選擇最適合的統計圖表。</li>
+                        <li><i class="fa-solid fa-check text-teal-400 mr-2"></i>計算並解讀資料的「集中趨勢」(平均數) 與「離散趨勢」(標準差)。</li>
+                        <li><i class="fa-solid fa-check text-teal-400 mr-2"></i>理解「常態分配」的特性與 Z分數 的強大功用。</li>
+                    </ul>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- 第3章 -->
+                    <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
+                        <h3 class="text-xl font-bold text-dark mb-4 pb-2 border-b-2 border-gray-100"><span class="text-secondary mr-2">第3章</span>資料的組織與圖表整理</h3>
+                        <p class="text-gray-600 mb-4">拿到原始數據（Raw Data）後，第一步是將其轉化為人類大腦容易吸收的格式。我們通常透過「表格」與「圖表」來達成這項任務。</p>
                         
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <button onclick="startSpecificQuiz('part1')" class="bg-white border-2 border-indigo-200 hover:border-indigo-500 hover:bg-indigo-50 text-indigo-800 px-4 py-4 rounded-xl font-bold transition shadow-sm flex flex-col items-center gap-2">
-                                <i class="fa-solid fa-seedling text-2xl"></i>
-                                第一篇：概論基礎
-                            </button>
-                            <button onclick="startSpecificQuiz('part2')" class="bg-white border-2 border-emerald-200 hover:border-emerald-500 hover:bg-emerald-50 text-emerald-800 px-4 py-4 rounded-xl font-bold transition shadow-sm flex flex-col items-center gap-2">
-                                <i class="fa-solid fa-chart-bar text-2xl"></i>
-                                第二篇：描述統計
-                            </button>
-                            <button onclick="startSpecificQuiz('part3')" class="bg-white border-2 border-orange-200 hover:border-orange-500 hover:bg-orange-50 text-orange-800 px-4 py-4 rounded-xl font-bold transition shadow-sm flex flex-col items-center gap-2">
-                                <i class="fa-solid fa-magnifying-glass-chart text-2xl"></i>
-                                第三篇：推論統計
-                            </button>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-gray-200 mb-6">
+                            <h4 class="font-bold text-teal-800 mb-3"><i class="fa-solid fa-table list-icon mr-2"></i> 次數分配表 (Frequency Table)</h4>
+                            <ul class="text-sm text-gray-700 space-y-2">
+                                <li><strong>絕對次數:</strong> 每個類別實際出現的人數。</li>
+                                <li><strong>相對次數 (百分比):</strong> 該類別人數佔整體的比例，方便不同規模的群體進行比較。</li>
+                                <li><strong>累積次數:</strong> 將次數由小到大累加，常用來計算百分位數（例如：學測的 PR 值）。</li>
+                            </ul>
+                        </div>
+
+                        <h4 class="font-bold text-teal-800 mb-4"><i class="fa-solid fa-chart-column list-icon mr-2"></i> 統計圖表選擇指南 (圖文範例)</h4>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <!-- 1. 長條圖 -->
+                            <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+                                <h5 class="font-bold text-gray-800 text-sm mb-1">長條圖 (Bar Chart)</h5>
+                                <p class="text-xs text-gray-500 mb-3 h-8">適合「名義/次序」類別資料。長條之間分離，用來比較各組的數量多寡。</p>
+                                <div class="h-32 w-full relative"><canvas id="demoBarChart"></canvas></div>
+                                <p class="text-[10px] text-center text-gray-400 mt-2">💡 例：大學生最愛的飲料甜度</p>
+                            </div>
+                            
+                            <!-- 2. 圓餅圖 -->
+                            <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+                                <h5 class="font-bold text-gray-800 text-sm mb-1">圓餅圖 (Pie Chart)</h5>
+                                <p class="text-xs text-gray-500 mb-3 h-8">適合呈現各類別佔整體的「百分比比例」。</p>
+                                <div class="h-32 w-full relative"><canvas id="demoPieChart"></canvas></div>
+                                <p class="text-[10px] text-center text-gray-400 mt-2">💡 例：受訪者的教育程度分佈</p>
+                            </div>
+
+                            <!-- 3. 直方圖 -->
+                            <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+                                <h5 class="font-bold text-gray-800 text-sm mb-1">直方圖 (Histogram)</h5>
+                                <p class="text-xs text-gray-500 mb-3 h-8">適合「等距/等比」連續資料。長條緊密相連，表示數值區間的連續性。</p>
+                                <div class="h-32 w-full relative"><canvas id="demoHistogram"></canvas></div>
+                                <p class="text-[10px] text-center text-gray-400 mt-2">💡 例：全校學生的考試成績分佈區間</p>
+                            </div>
+
+                            <!-- 4. 折線圖 -->
+                            <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+                                <h5 class="font-bold text-gray-800 text-sm mb-1">折線圖 (Line Chart)</h5>
+                                <p class="text-xs text-gray-500 mb-3 h-8">適合呈現資料隨「時間」的發展趨勢與變化。</p>
+                                <div class="h-32 w-full relative"><canvas id="demoLineChart"></canvas></div>
+                                <p class="text-[10px] text-center text-gray-400 mt-2">💡 例：某國近五年的生育率變化</p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 測驗進行區 (初始隱藏) -->
-                    <div id="quiz-active-container" class="hidden">
-                        <div class="flex justify-between items-center mb-4 border-b pb-4">
-                            <h3 id="quiz-topic-title" class="font-bold text-lg text-primary">測驗進行中</h3>
-                            <button onclick="backToQuizMenu()" class="text-sm text-gray-500 hover:text-gray-800 transition"><i class="fa-solid fa-arrow-left mr-1"></i>返回選單</button>
+                    <!-- 第4 & 5 章 -->
+                    <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
+                        <h3 class="text-xl font-bold text-dark mb-4 pb-2 border-b-2 border-gray-100"><span class="text-secondary mr-2">第4 & 5章</span>集中趨勢與離散趨勢</h3>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-slate-50 p-5 rounded-xl">
+                                <h4 class="font-bold text-teal-800 mb-2">集中趨勢 (Central Tendency)</h4>
+                                <ul class="text-sm text-gray-700 space-y-1 mb-3">
+                                    <li><strong>平均數 (Mean):</strong> 總和除以個數。易受極端值影響。</li>
+                                    <li><strong>中位數 (Median):</strong> 排序最中間的值。不受極端值影響。</li>
+                                    <li><strong>眾數 (Mode):</strong> 出現最多次的值。</li>
+                                </ul>
+                                <div class="bg-example p-3 rounded-lg example-box mt-2">
+                                    <p class="text-xs text-gray-700"><strong>💡 生活實例：</strong><br>一間公司9個員工月薪3萬，老闆月薪300萬。「平均薪資」高達32.7萬（被老闆拉高），但「中位數」是3萬，中位數更能代表一般員工狀況。</p>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-5 rounded-xl">
+                                <h4 class="font-bold text-teal-800 mb-2">離散趨勢 (Dispersion)</h4>
+                                <ul class="text-sm text-gray-700 space-y-1 mb-3">
+                                    <li><strong>全距 (Range):</strong> 最大值減最小值。</li>
+                                    <li><strong>變異數 (Variance):</strong> 數值與平均數差值的平方和平均。</li>
+                                    <li><strong>標準差 (Std Dev):</strong> 變異數的開根號，描述資料分散程度。</li>
+                                </ul>
+                                <div class="bg-example p-3 rounded-lg example-box mt-2">
+                                    <p class="text-xs text-gray-700"><strong>💡 生活實例：</strong><br>甲班和乙班平均分數都是70分。但甲班標準差是5（大家成績差不多），乙班標準差是20（有人考100，有人考40，實力差距大）。</p>
+                                </div>
+                            </div>
                         </div>
 
+                        <!-- 擴充說明：偏態 -->
+                        <div class="bg-yellow-50 p-5 rounded-xl mb-6 border border-yellow-100">
+                            <h4 class="font-bold text-yellow-800 mb-2"><i class="fa-solid fa-shapes mr-2"></i> 資料的形狀：偏態 (Skewness)</h4>
+                            <p class="text-sm text-gray-700 mb-3">資料不一定都是完美對稱的，有時會偏向一邊，這會影響平均數與中位數的大小關係：</p>
+                            <ul class="text-sm text-gray-700 space-y-2">
+                                <li><strong>右偏 (正偏態):</strong> 少數極端高分拉長了右邊的尾巴（如：全國財富分配，少數富豪極端有錢）。此時 <strong class="text-red-600">平均數 > 中位數</strong>。</li>
+                                <li><strong>左偏 (負偏態):</strong> 少數極端低分拉長了左邊的尾巴（如：非常簡單的考試，大多數人都考高分）。此時 <strong class="text-red-600">平均數 < 中位數</strong>。</li>
+                            </ul>
+                        </div>
+
+                        <!-- 互動圖表：極端值對平均數與中位數的影響 -->
+                        <div class="bg-white rounded-xl shadow-inner p-4 border border-gray-200">
+                            <h4 class="text-lg font-bold text-dark mb-2">📊 互動演示：極端值的影響</h4>
+                            <p class="text-sm text-gray-500 mb-4">嘗試加入極大值，觀察「平均數(紫線)」和「中位數(綠線)」誰會被嚴重拉扯。</p>
+                            
+                            <div class="flex flex-col lg:flex-row gap-6">
+                                <div class="w-full lg:w-2/3 h-64 relative">
+                                    <canvas id="centralTendencyChart"></canvas>
+                                </div>
+                                <div class="w-full lg:w-1/3 flex flex-col justify-center bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-xs font-bold text-primary">平均數: <span id="meanValue" class="text-lg"></span></span>
+                                        <span class="text-xs font-bold text-secondary">中位數: <span id="medianValue" class="text-lg"></span></span>
+                                    </div>
+                                    <div class="flex gap-2 mt-2">
+                                        <input type="number" id="newDataInput" placeholder="輸入數字(0-100)" class="w-full px-2 py-1 text-sm border rounded">
+                                        <button id="addDataBtn" class="bg-primary text-white px-3 py-1 rounded text-sm whitespace-nowrap">加入</button>
+                                    </div>
+                                    <div class="mt-2 flex gap-2">
+                                        <button id="addExtremeHighBtn" class="flex-1 bg-red-100 text-red-700 py-1 rounded text-xs font-bold">加入極大值(100)</button>
+                                        <button id="resetDataBtn" class="flex-1 bg-gray-200 text-gray-700 py-1 rounded text-xs font-bold">重設</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第6章 -->
+                    <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
+                        <h3 class="text-xl font-bold text-dark mb-4 pb-2 border-b-2 border-gray-100"><span class="text-secondary mr-2">第6章</span>常態分配 (Normal Curve)</h3>
+                        <p class="text-gray-600 mb-4">在社會科學中，許多現象（如身高、智商、考試成績）呈現對稱的鐘型分佈。我們常利用「Z分數」來標準化不同單位的資料，以計算機率。</p>
+                        
+                        <!-- 擴充說明：常態分配特性 -->
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-slate-50 p-5 rounded-xl border border-gray-200">
+                                <h4 class="font-bold text-indigo-800 mb-2">常態分配的三大特性</h4>
+                                <ul class="text-sm text-gray-700 list-disc list-inside space-y-1">
+                                    <li><strong>鐘型對稱:</strong> 左右完美對稱，不偏斜 (偏態係數為0)。</li>
+                                    <li><strong>三數合一:</strong> 平均數 = 中位數 = 眾數，且皆位於曲線最高點。</li>
+                                    <li><strong>漸近線:</strong> 曲線兩端向外無限延伸，永遠不會碰到 X 軸（代表發生極端情況的機率極低，但永遠不為零）。</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 p-5 rounded-xl border border-gray-200">
+                                <h4 class="font-bold text-indigo-800 mb-2">標準化：Z分數 (Z-score)</h4>
+                                <p class="text-sm text-gray-700 mb-2">公式：<code class="bg-gray-200 px-2 py-1 rounded text-indigo-700 font-bold">Z = (觀測值 - 平均數) / 標準差</code></p>
+                                <p class="text-sm text-gray-700">Z分數告訴我們某個特定數值「距離平均數有幾個標準差」。透過Z分數，我們可以將不同尺度的單位（例如公分與公斤、國文成績與數學成績）放在同一個標準下進行公平的比較。</p>
+                            </div>
+                        </div>
+
+                        <!-- 互動圖表：常態分配 -->
+                        <div class="bg-white rounded-xl shadow-inner p-4 sm:p-6 border border-gray-200 mt-4">
+                            <h4 class="text-lg font-bold text-dark mb-2">📊 互動演示：玩轉鐘型曲線</h4>
+                            <div class="flex flex-col lg:flex-row gap-8 items-center">
+                                <div class="w-full lg:w-1/3 space-y-6">
+                                    <div>
+                                        <label class="block text-sm font-bold text-gray-700 flex justify-between">
+                                            <span>平均數 μ</span><span id="meanDisplay" class="text-primary">0</span>
+                                        </label>
+                                        <input type="range" id="meanSlider" min="-5" max="5" step="0.5" value="0" class="w-full accent-primary">
+                                        <p class="text-xs text-gray-500 mt-1">控制曲線的左右平移</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-bold text-gray-700 flex justify-between">
+                                            <span>標準差 σ</span><span id="stdDevDisplay" class="text-secondary">1</span>
+                                        </label>
+                                        <input type="range" id="stdDevSlider" min="0.5" max="3" step="0.1" value="1" class="w-full accent-secondary">
+                                        <p class="text-xs text-gray-500 mt-1">控制曲線的高低寬窄 (資料越分散越扁平)</p>
+                                    </div>
+                                    <div class="bg-example p-3 rounded-lg example-box">
+                                        <p class="text-xs text-gray-700"><strong>💡 經驗法則 (68-95-99.7)：</strong><br>約68%的資料落在平均數±1個標準差內；95%落在±2個標準差內。</p>
+                                    </div>
+                                </div>
+                                <div class="w-full lg:w-2/3 h-56 relative">
+                                    <canvas id="normalDistChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 測驗按鈕 -->
+                    <div class="text-center pt-4">
+                        <button onclick="startQuiz('part2')" class="bg-accent text-white px-8 py-3 rounded-xl hover:bg-yellow-600 transition font-bold shadow-md inline-flex items-center">
+                            <i class="fa-solid fa-pen-to-square mr-2"></i> 進行第二篇小測驗 (涵蓋第3-6章，共13題)
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="part3" class="section-container">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-accent"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                    <h2 class="text-3xl font-black text-dark">第三篇：推論統計</h2>
+                </div>
+                
+                <!-- 新增：第三篇 學習目標 (取代原本簡單的一句話) -->
+                <div class="bg-gradient-to-r from-orange-50 to-amber-50 p-6 rounded-2xl border border-orange-100 mb-6 shadow-sm">
+                    <h4 class="text-lg font-bold text-orange-900 mb-2"><i class="fa-solid fa-bullseye text-orange-500 mr-2"></i>本階段學習目標</h4>
+                    <p class="text-sm text-orange-800 mb-3">這是社會統計最核心也較困難的部分，教導我們如何從「少數樣本」的結果，去推論整個「龐大母體」的現象。學完本篇後，你將能夠：</p>
+                    <ul class="text-sm text-orange-700 space-y-2 font-medium">
+                        <li><i class="fa-solid fa-check text-orange-400 mr-2"></i>辨識各種抽樣方法，並理解「中央極限定理」的意義。</li>
+                        <li><i class="fa-solid fa-check text-orange-400 mr-2"></i>運用「信賴區間」進行參數估計，並看懂民調誤差。</li>
+                        <li><i class="fa-solid fa-check text-orange-400 mr-2"></i>根據資料特性，正確選擇 t檢定、ANOVA、卡方檢定或迴歸分析來檢驗假設。</li>
+                    </ul>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- 第7章 抽樣與抽樣分配 -->
+                    <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
+                        <h3 class="text-xl font-bold text-dark mb-4 pb-2 border-b-2 border-gray-100"><span class="text-accent mr-2">第7章</span>抽樣與抽樣分配</h3>
+                        <p class="text-gray-600 mb-4">推論統計的第一步是獲取具代表性的樣本。抽樣方法分為兩大類：「機率抽樣」與「非機率抽樣」。好的機率抽樣方法能計算並降低抽樣誤差，讓樣本結構貼近母體；而非機率抽樣則常用於難以接觸母體或資源受限的探索性研究中。</p>
+                        
+                        <!-- 擴充說明：非機率抽樣 -->
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-slate-50 p-5 rounded-xl border border-gray-200">
+                                <h4 class="font-bold text-orange-800 mb-2"><i class="fa-solid fa-dice text-orange-500 mr-2"></i>機率抽樣 (Probability Sampling)</h4>
+                                <p class="text-sm text-gray-700 mb-2">母體中每一個單位被抽中的機率是已知且不為零的。這是推論統計的基礎。</p>
+                                <ul class="text-sm text-gray-600 list-disc list-inside space-y-1">
+                                    <li>簡單隨機抽樣 (SRS)</li>
+                                    <li>系統抽樣 (等距抽取)</li>
+                                    <li>分層抽樣 (層間異、層內同)</li>
+                                    <li>叢集抽樣 (叢集間同、叢集內異)</li>
+                                </ul>
+                            </div>
+                            <div class="bg-orange-50 p-5 rounded-xl border border-orange-200">
+                                <h4 class="font-bold text-orange-900 mb-2"><i class="fa-solid fa-user-ninja text-orange-600 mr-2"></i>非機率抽樣 (Non-probability Sampling)</h4>
+                                <p class="text-sm text-gray-700 mb-2">研究者依據主觀判斷、便利性或特定目的來選取樣本。無法計算抽樣誤差。</p>
+                                <ul class="text-sm text-gray-700 space-y-3 mt-3">
+                                    <li>
+                                        <span class="font-bold text-orange-800 block">便利抽樣 (Convenience):</span>
+                                        挑選最容易接觸到的人。
+                                        <span class="text-xs text-gray-500 block">例：教授在課堂上發問卷給修課學生。</span>
+                                    </li>
+                                    <li>
+                                        <span class="font-bold text-orange-800 block">立意抽樣 (Purposive):</span>
+                                        依研究目的刻意挑選特定對象。
+                                        <span class="text-xs text-gray-500 block">例：研究偏鄉教育，專門找有偏鄉教學經驗的老師訪談。</span>
+                                    </li>
+                                    <li>
+                                        <span class="font-bold text-orange-800 block">滾雪球抽樣 (Snowball):</span>
+                                        先找到少數符合條件者，再請他們介紹其他人。
+                                        <span class="text-xs text-gray-500 block">例：研究罕見疾病患者或非法幫派成員。</span>
+                                    </li>
+                                    <li>
+                                        <span class="font-bold text-orange-800 block">配額抽樣 (Quota):</span>
+                                        先設定好各類別的樣本配額比例，然後用便利抽樣去湊滿人數。
+                                        <span class="text-xs text-gray-500 block">例：規定要訪問50男50女，然後在街頭隨便找人直到男女各滿50人。</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 擴充說明：抽樣誤差與CLT -->
+                        <div class="bg-slate-50 p-5 rounded-xl mb-6 border border-gray-200">
+                            <h4 class="font-bold text-orange-800 mb-2">抽樣誤差 (Sampling Error) 與 中央極限定理 (CLT)</h4>
+                            <p class="text-sm text-gray-700 mb-3">只要是抽樣，就一定會產生誤差（因為你沒有普查所有人）。但只要使用<strong>隨機抽樣</strong>，這個誤差的大小就是「可預期且可計算的」。通常樣本數越大，抽樣誤差越小。</p>
+                            <p class="text-sm text-gray-700"><strong>🎯 中央極限定理的神奇之處：</strong><br>為什麼我們敢用小小的樣本推論龐大的母體？因為 CLT 數學定理證明了：不管母體原本長什麼奇怪的形狀，只要我們抽的樣本數夠大（通常 n ≥ 30），「所有可能樣本平均數」的抽樣分配就會形成一個漂亮的常態分配！這為後續的假設檢定打下了堅實的理論基礎。</p>
+                        </div>
+
+                        <!-- 互動圖表：抽樣方法模擬 -->
+                        <div class="bg-slate-50 rounded-xl p-4 sm:p-6 border border-gray-200 mt-4">
+                            <h4 class="text-lg font-bold text-dark mb-4">🎯 互動演示：機率抽樣模擬器</h4>
+                            <div class="flex flex-col lg:flex-row gap-6">
+                                <div class="w-full lg:w-1/3 flex flex-col gap-2">
+                                    <p class="text-sm text-gray-600 mb-2">母體共50人，分為5種不同顏色特徵的群體(各10人)。請點擊按鈕抽出10名樣本：</p>
+                                    <button onclick="simulateSampling('srs')" class="bg-white border-2 border-blue-400 text-blue-700 hover:bg-blue-50 px-3 py-2 rounded font-bold text-sm text-left">簡單隨機 (完全靠機率)</button>
+                                    <button onclick="simulateSampling('sys')" class="bg-white border-2 border-green-400 text-green-700 hover:bg-green-50 px-3 py-2 rounded font-bold text-sm text-left">系統抽樣 (等距抽取)</button>
+                                    <button onclick="simulateSampling('str')" class="bg-white border-2 border-purple-400 text-purple-700 hover:bg-purple-50 px-3 py-2 rounded font-bold text-sm text-left">分層抽樣 (每層各抽2人)</button>
+                                    <button onclick="simulateSampling('clu')" class="bg-white border-2 border-orange-400 text-orange-700 hover:bg-orange-50 px-3 py-2 rounded font-bold text-sm text-left">叢集抽樣 (隨機抽1群全包)</button>
+                                    <button onclick="resetSampling()" class="mt-2 text-gray-500 hover:text-gray-800 text-sm underline text-center">重置母體</button>
+                                </div>
+                                <div class="w-full lg:w-2/3">
+                                    <div id="population-grid" class="grid grid-cols-10 gap-1 bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+                                        <!-- 由 JS 動態生成 -->
+                                    </div>
+                                    <div class="text-center mt-2 text-sm font-bold text-gray-600">目前抽取人數: <span id="sample-count" class="text-accent">0</span> / 10</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第8 & 9 章 -->
+                    <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
+                        <h3 class="text-xl font-bold text-dark mb-4 pb-2 border-b-2 border-gray-100"><span class="text-accent mr-2">第8 & 9章</span>參數估計與假設檢定</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-bold text-lg text-gray-800 mb-2">參數估計 (Estimation)</h4>
+                                <p class="text-sm text-gray-600 mb-3">使用樣本統計量來推估未知的母體參數。</p>
+                                <ul class="text-sm text-gray-700 space-y-2 mb-3">
+                                    <li><strong>點估計:</strong> 用單一數值猜測（如：預測支持度是 40%）。缺點是幾乎不可能完全命中。</li>
+                                    <li><strong>區間估計:</strong> 給出一個範圍，並附上「信心水準（如 95%）」，表示我們有多大把握這個範圍涵蓋了真正的母體參數。</li>
+                                </ul>
+                                <div class="bg-example p-3 rounded-lg example-box">
+                                    <p class="text-sm text-gray-700"><strong>💡 總統大選預測：</strong><br>民調顯示A候選人支持度為40%，在95%的信心水準下，抽樣誤差為±3%。這代表我們有95%的信心認為，真正的全體選民支持度介於 37% ~ 43% 之間。</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-gray-800 mb-2">假設檢定 (Hypothesis Testing)</h4>
+                                <p class="text-sm text-gray-600 mb-3">就像統計學的法庭，我們必須先設立兩種對立的假設：</p>
+                                <ul class="text-sm text-gray-700 space-y-2 mb-3">
+                                    <li><span class="font-bold text-orange-700">虛無假設 (H₀):</span> 永遠預設「無罪」、沒差異、沒效果。（這是我們想嘗試推翻的目標）</li>
+                                    <li><span class="font-bold text-orange-700">對立假設 (H₁):</span> 代表「有罪」、有顯著差異、有效果。（這是研究者真正想證明的結果）</li>
+                                    <li><strong>P值 (p-value):</strong> 在 H₀ 為真的前提下，得到目前數據的機率。若 P < 0.05，代表結果極度罕見，我們就「拒絕H₀，接受H₁」。</li>
+                                </ul>
+                                <div class="bg-example p-3 rounded-lg example-box">
+                                    <p class="text-sm text-gray-700"><strong>💡 男女薪資差異 (t檢定)：</strong><br>H₀: 男女薪資沒有差異；H₁: 男女薪資有顯著差異。<br>若收集樣本計算後 p = 0.01 (小於0.05)！我們就「拒絕H₀，接受H₁」，推論社會上男女確實存在顯著的薪資差異。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 擴充說明：型一與型二錯誤 -->
+                        <div class="mt-6 border-t border-gray-100 pt-6">
+                            <h4 class="font-bold text-lg text-gray-800 mb-3">⚖️ 檢定可能犯的兩種錯誤 (Type I & Type II Errors)</h4>
+                            <p class="text-sm text-gray-600 mb-4">因為我們是透過「抽樣樣本」來推論母體，所以永遠有判斷錯誤的風險。法庭判案可能會冤枉好人或縱放壞人，統計檢定也一樣：</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-red-50 p-5 rounded-xl border border-red-100">
+                                    <h5 class="font-bold text-red-800 mb-2">型一錯誤 (Type I Error, 偽陽性)</h5>
+                                    <p class="text-sm text-gray-700 mb-3"><strong>統計定義：</strong> H₀ 其實是真的，但我們卻錯誤地「拒絕 H₀」。<br>(沒效卻說有效，就像冤枉好人)</p>
+                                    <div class="bg-white p-3 rounded border border-red-200 flex items-start gap-3 shadow-sm">
+                                        <i class="fa-solid fa-mars text-red-400 text-xl mt-1"></i>
+                                        <p class="text-xs text-gray-700"><strong>💡 經典醫學比喻：</strong><br>醫生對一位「沒懷孕的生理男性」說：「恭喜你！你懷孕了！」</p>
+                                    </div>
+                                    <p class="text-xs text-red-600 mt-3 font-bold">＊顯著水準 (α) 就是我們容許犯下型一錯誤的最大機率，通常嚴格控制在 0.05 內。</p>
+                                </div>
+                                <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
+                                    <h5 class="font-bold text-blue-800 mb-2">型二錯誤 (Type II Error, 偽陰性)</h5>
+                                    <p class="text-sm text-gray-700 mb-3"><strong>統計定義：</strong> H₀ 其實是假的，但我們卻「沒有拒絕 H₀」。<br>(有效卻說沒效，就像縱放壞人)</p>
+                                    <div class="bg-white p-3 rounded border border-blue-200 flex items-start gap-3 shadow-sm">
+                                        <i class="fa-solid fa-person-pregnant text-blue-400 text-xl mt-1"></i>
+                                        <p class="text-xs text-gray-700"><strong>💡 經典醫學比喻：</strong><br>醫生對一位「明明大腹便便、即將臨盆的孕婦」說：「妳沒有懷孕。」</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第10, 11, 12 章 -->
+                    <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8 border border-gray-100">
+                        <h3 class="text-xl font-bold text-dark mb-4 pb-2 border-b-2 border-gray-100"><span class="text-accent mr-2">第10~12章</span>進階分析方法</h3>
+                        <div class="space-y-6">
+                            <!-- 第10章 -->
+                            <div class="p-5 border border-gray-200 rounded-xl bg-slate-50 hover:bg-white transition shadow-sm">
+                                <h4 class="font-bold text-dark text-lg mb-2">第10章: 類別資料分析 (卡方檢定 Chi-Square)</h4>
+                                <p class="text-sm text-gray-600 mb-3">專門用於分析「名義/次序尺度」的變數。透過比較交叉表中的「實際觀察到的次數」與「理論期望的次數」，來判斷兩個類別變數是否互相獨立。</p>
+                                
+                                <div class="bg-white p-4 rounded-lg border-l-4 border-indigo-500 shadow-sm">
+                                    <h5 class="font-bold text-indigo-800 mb-3">📊 實例與數據：性別與「育嬰假法案」支持度</h5>
+                                    <p class="text-sm text-gray-600 mb-2">我們抽樣調查了200人，想知道性別與政策支持度是否相關。以下為統計交叉表 <span class="text-xs text-gray-400">(括號內為假設兩者無關時的期望次數)</span>：</p>
+                                    <div class="overflow-x-auto mb-3">
+                                        <table class="w-full text-sm text-center border-collapse">
+                                            <thead>
+                                                <tr class="bg-gray-100 text-gray-700">
+                                                    <th class="border border-gray-200 p-2">性別 \ 態度</th>
+                                                    <th class="border border-gray-200 p-2 text-green-700">支持法案</th>
+                                                    <th class="border border-gray-200 p-2 text-red-700">反對法案</th>
+                                                    <th class="border border-gray-200 p-2 font-bold">總計</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="border border-gray-200 p-2 font-bold bg-gray-50">女性</td>
+                                                    <td class="border border-gray-200 p-2 bg-green-50">70人 <span class="text-gray-500 text-xs block">(期望:55)</span></td>
+                                                    <td class="border border-gray-200 p-2">30人 <span class="text-gray-500 text-xs block">(期望:45)</span></td>
+                                                    <td class="border border-gray-200 p-2 bg-gray-50 font-bold">100人</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border border-gray-200 p-2 font-bold bg-gray-50">男性</td>
+                                                    <td class="border border-gray-200 p-2">40人 <span class="text-gray-500 text-xs block">(期望:55)</span></td>
+                                                    <td class="border border-gray-200 p-2 bg-red-50">60人 <span class="text-gray-500 text-xs block">(期望:45)</span></td>
+                                                    <td class="border border-gray-200 p-2 bg-gray-50 font-bold">100人</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <p class="text-sm text-gray-700 bg-indigo-50 p-3 rounded"><strong>💡 解讀邏輯：</strong>女性「實際支持(70人)」明顯高於「期望支持(55人)」。卡方檢定就是計算這些「落差」的總和。若落差極大（p < 0.05），我們就推論：性別與支持度有顯著關聯，並非獨立事件。</p>
+                                </div>
+                            </div>
+
+                            <!-- 第11章 -->
+                            <div class="p-5 border border-gray-200 rounded-xl bg-slate-50 hover:bg-white transition shadow-sm">
+                                <h4 class="font-bold text-dark text-lg mb-4 pb-2 border-b border-gray-200">第11章: 平均數比較 (獨立樣本 t檢定 與 ANOVA)</h4>
+                                
+                                <!-- 1. 獨立樣本 t 檢定 -->
+                                <div class="mb-6">
+                                    <h5 class="font-bold text-gray-800 mb-2"><i class="fa-solid fa-scale-balanced text-blue-500 mr-2"></i>一、 獨立樣本 t 檢定 (Independent Samples t-test)</h5>
+                                    <p class="text-sm text-gray-600 mb-3">當我們要比較的獨立群體<strong>「只有兩組」</strong>時使用。它的目的是檢定這兩個群體的平均數是否有顯著差異。</p>
+                                    
+                                    <div class="bg-white p-4 rounded-lg border-l-4 border-blue-500 shadow-sm">
+                                        <h6 class="font-bold text-blue-800 mb-3">📊 實例與數據：長照機構兩種照護模式的滿意度</h6>
+                                        <p class="text-sm text-gray-600 mb-3">為了了解「傳統照護(A組)」與「自立支援照護(B組)」哪一種能帶來更高的長輩滿意度，我們分別抽樣調查了各 30 位長輩（滿分100分）：</p>
+                                        <div class="flex flex-col md:flex-row gap-3 mb-3">
+                                            <div class="flex-1 bg-gray-50 p-3 rounded text-center border border-gray-200 shadow-sm">
+                                                <div class="font-bold text-gray-700 text-sm mb-1">傳統照護 (A組)</div>
+                                                <div class="text-2xl font-black text-gray-900 mb-1">75分</div>
+                                            </div>
+                                            <div class="flex-1 bg-blue-50 p-3 rounded text-center border border-blue-200 shadow-sm">
+                                                <div class="font-bold text-blue-800 text-sm mb-1">自立支援照護 (B組)</div>
+                                                <div class="text-2xl font-black text-blue-700 mb-1">82分</div>
+                                            </div>
+                                        </div>
+                                        <p class="text-sm text-gray-700 bg-blue-50 p-3 rounded"><strong>💡 解讀邏輯 (t值)：</strong>兩組平均相差了 7 分。t檢定會計算這 7 分的差距是因為「抽樣產生的隨機誤差」，還是「兩種照護模式真的有顯著差異」。如果算出來的 p值 < 0.05，我們就能推論差距是真實存在的，自立支援照護確實帶來了較高的滿意度。</p>
+                                    </div>
+                                </div>
+
+                                <!-- 2. ANOVA -->
+                                <div>
+                                    <h5 class="font-bold text-gray-800 mb-2"><i class="fa-solid fa-layer-group text-emerald-500 mr-2"></i>二、 變異數分析 (ANOVA)</h5>
+                                    <p class="text-sm text-gray-600 mb-3">當要比較的獨立群體<strong>「大於或等於三組」</strong>時使用。ANOVA 的核心精神是比較「組間變異（各群體間的差距）」與「組內變異（同一群體內部的個體差異）」。</p>
+                                    
+                                    <div class="bg-white p-4 rounded-lg border-l-4 border-emerald-500 shadow-sm">
+                                        <h6 class="font-bold text-emerald-800 mb-3">📊 實例與數據：三種教學法的成效比較</h6>
+                                        <p class="text-sm text-gray-600 mb-3">為了比較 A(傳統)、B(翻轉)、C(遊戲化) 三種教學法的學生期末考平均分數：</p>
+                                        <div class="flex flex-col md:flex-row gap-3 mb-3">
+                                            <div class="flex-1 bg-gray-50 p-3 rounded text-center border border-gray-200 shadow-sm">
+                                                <div class="font-bold text-gray-700 text-sm mb-1">A教學法 (傳統)</div>
+                                                <div class="text-2xl font-black text-gray-900 mb-1">70分</div>
+                                                <div class="text-xs text-gray-500 px-2">分數多在 68~72 分之間<br>(組內差異小)</div>
+                                            </div>
+                                            <div class="flex-1 bg-emerald-50 p-3 rounded text-center border border-emerald-200 shadow-sm">
+                                                <div class="font-bold text-emerald-800 text-sm mb-1">B教學法 (翻轉)</div>
+                                                <div class="text-2xl font-black text-emerald-700 mb-1">85分</div>
+                                                <div class="text-xs text-gray-500 px-2">分數多在 83~87 分之間<br>(組內差異小)</div>
+                                            </div>
+                                            <div class="flex-1 bg-gray-50 p-3 rounded text-center border border-gray-200 shadow-sm">
+                                                <div class="font-bold text-gray-700 text-sm mb-1">C教學法 (遊戲化)</div>
+                                                <div class="text-2xl font-black text-gray-900 mb-1">72分</div>
+                                                <div class="text-xs text-gray-500 px-2">有人考100分，有人考40分<br>(組內差異大)</div>
+                                            </div>
+                                        </div>
+                                        <p class="text-sm text-gray-700 bg-emerald-50 p-3 rounded"><strong>💡 解讀邏輯 (F檢定)：</strong>ANOVA 藉由計算 <strong>F值 = (組間變異) ÷ (組內變異)</strong> 來判斷。如果這三個班級的平均分差距很大(組間大)，且各自班級內的程度都很平均(組內小)，算出的 F 值就會很大，證明「教學法真的有效造成了分數差異」，而不是學生個人隨機實力的影響。</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 第12章 -->
+                            <div class="p-5 border border-gray-200 rounded-xl bg-slate-50 hover:bg-white transition shadow-sm">
+                                <h4 class="font-bold text-dark text-lg mb-4 pb-2 border-b border-gray-200">第12章: 相關分析與線性迴歸 (簡單 & 多元)</h4>
+                                
+                                <!-- 1. 相關分析 -->
+                                <div class="mb-6">
+                                    <h5 class="font-bold text-gray-800 mb-2"><i class="fa-solid fa-link text-orange-500 mr-2"></i>一、 相關分析 (Correlation)</h5>
+                                    <p class="text-sm text-gray-600 mb-3">用於衡量兩個「連續變數」之間的直線關聯程度與方向。最常用的是皮爾森相關係數 (Pearson's r)。</p>
+                                    <div class="grid md:grid-cols-2 gap-4 mb-3">
+                                        <div class="bg-white p-4 rounded border border-gray-200 shadow-sm text-sm text-gray-700">
+                                            <strong class="text-orange-700 block mb-2">數值解讀 (r 值介於 -1 到 +1 之間)：</strong>
+                                            <ul class="list-disc list-inside space-y-1">
+                                                <li><strong>正相關 (r > 0)：</strong>X變大，Y也跟著變大。<br><span class="text-xs text-gray-500 ml-4">(例：讀書時間越長，考試成績越高)</span></li>
+                                                <li><strong>負相關 (r < 0)：</strong>X變大，Y卻變小。<br><span class="text-xs text-gray-500 ml-4">(例：上課缺席次數越多，成績越低)</span></li>
+                                                <li><strong>零相關 (r = 0)：</strong>兩者無直線關係。<br><span class="text-xs text-gray-500 ml-4">(例：身高高低與智商高低無關)</span></li>
+                                            </ul>
+                                        </div>
+                                        <div class="bg-red-50 p-4 rounded border border-red-200 shadow-sm text-sm text-gray-700 flex flex-col justify-center">
+                                            <strong class="text-red-700 mb-2 text-base"><i class="fa-solid fa-triangle-exclamation mr-1"></i> 重要觀念：相關「不等於」因果！</strong>
+                                            <p class="text-gray-700">夏天時「冰淇淋銷量」和「溺水人數」呈現高度正相關，但吃冰淇淋絕對不會導致溺水！</p>
+                                            <p class="text-gray-700 mt-2">這是因為背後有共同的第三變數（天氣炎熱）同時造成了這兩件事。做研究時千萬不能看到高度相關，就隨便說誰導致了誰。</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. 簡單線性迴歸 -->
+                                <div class="mb-6">
+                                    <h5 class="font-bold text-gray-800 mb-2"><i class="fa-solid fa-chart-line text-orange-500 mr-2"></i>二、 簡單線性迴歸 (Simple Linear Regression)</h5>
+                                    <p class="text-sm text-gray-600 mb-3">若確定兩者有因果關係，我們可以用一個自變數(X)來預測應變數(Y)，並建立數學方程式：<code class="text-orange-700 font-bold px-1 bg-orange-100 rounded">Y = a + bX</code>。</p>
+                                    
+                                    <div class="bg-white p-4 rounded-lg border-l-4 border-orange-500 shadow-sm">
+                                        <h6 class="font-bold text-orange-800 mb-3">📊 實例數據：教育年數 (X) 與 起薪預測 (Y)</h6>
+                                        <p class="text-sm text-gray-600 mb-3">我們收集了 5 名社會新鮮人的資料，探討教育年數與月薪(萬元)的關係：</p>
+                                        
+                                        <div class="grid grid-cols-6 gap-1 text-center text-sm mb-4 mx-auto max-w-lg">
+                                            <div class="bg-gray-200 font-bold p-2 rounded flex items-center justify-center">X (教育年)</div>
+                                            <div class="bg-gray-50 border border-gray-200 p-2 rounded">12<br><span class="text-[10px] text-gray-400">高中</span></div>
+                                            <div class="bg-gray-50 border border-gray-200 p-2 rounded">14<br><span class="text-[10px] text-gray-400">專科</span></div>
+                                            <div class="bg-gray-50 border border-gray-200 p-2 rounded">16<br><span class="text-[10px] text-gray-400">大學</span></div>
+                                            <div class="bg-gray-50 border border-gray-200 p-2 rounded">16<br><span class="text-[10px] text-gray-400">大學</span></div>
+                                            <div class="bg-gray-50 border border-gray-200 p-2 rounded">18<br><span class="text-[10px] text-gray-400">碩士</span></div>
+                                            
+                                            <div class="bg-orange-100 font-bold text-orange-800 p-2 rounded mt-1 flex items-center justify-center">Y (起薪萬)</div>
+                                            <div class="bg-white border border-orange-200 p-2 rounded mt-1">2.8</div>
+                                            <div class="bg-white border border-orange-200 p-2 rounded mt-1">3.1</div>
+                                            <div class="bg-white border border-orange-200 p-2 rounded mt-1">3.5</div>
+                                            <div class="bg-white border border-orange-200 p-2 rounded mt-1">3.7</div>
+                                            <div class="bg-white border border-orange-200 p-2 rounded mt-1">4.5</div>
+                                        </div>
+                                        
+                                        <div class="bg-orange-50 p-3 rounded">
+                                            <p class="text-sm text-gray-800 mb-2">最佳預測迴歸方程式為： <code class="bg-white px-2 py-1 border border-orange-200 rounded text-orange-700 font-black text-base shadow-sm mx-1">Y = -0.3 + 0.25X</code></p>
+                                            <ul class="text-sm text-gray-700 list-disc list-inside space-y-2 ml-1">
+                                                <li><strong>解讀斜率 (0.25)：</strong>教育年數 (X) 每多 1 年，起薪 (Y) 預期會增加 <strong>0.25 萬元 (即 2500 元)</strong>。</li>
+                                                <li><strong>模型應用 (預測未來)：</strong>如果遇到一位讀了20年書的博士生，預測他的合理起薪大約是：<code>-0.3 + (0.25 × 20) = 4.7 萬元</code>。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 3. 多元線性迴歸 -->
+                                <div>
+                                    <h5 class="font-bold text-gray-800 mb-2"><i class="fa-solid fa-network-wired text-orange-500 mr-2"></i>三、 多元線性迴歸 (Multiple Linear Regression)</h5>
+                                    <p class="text-sm text-gray-600 mb-3">社會現象通常很複雜，一個結果(Y)往往由「多個原因」共同造成（例如：起薪不只看學歷，還看科系、性別、公司規模）。多元迴歸允許我們同時放入多個自變數 (X₁, X₂, X₃...) 來預測 Y。</p>
+                                    
+                                    <div class="bg-white p-4 rounded-lg border-l-4 border-purple-500 shadow-sm">
+                                        <h6 class="font-bold text-purple-800 mb-3">📊 實例情境：房屋價格預測模型</h6>
+                                        <p class="text-sm text-gray-700 mb-2">房仲業想預測台北市某區域的房價(Y)。他們找出三個關鍵變數：坪數(X₁)、屋齡(X₂)與附近捷運站數量(X₃)，透過電腦算出了以下方程式：</p>
+                                        <div class="bg-purple-50 p-3 rounded mb-3 text-center border border-purple-100 shadow-inner">
+                                            <code class="text-purple-800 font-black text-[13px] sm:text-base">房價(萬) = 150 + 50×(坪數) - 10×(屋齡) + 20×(捷運數量)</code>
+                                        </div>
+                                        <ul class="text-sm text-gray-700 list-disc list-inside space-y-3">
+                                            <li><strong>「控制」概念 (斜率 50)：</strong>代表在「屋齡」和「捷運數量」都不變的情況下，房子每大 1 坪，房價預估增加 50 萬。</li>
+                                            <li><strong>負斜率 (-10)：</strong>代表在其他條件固定下，房子每老 1 年，房價預估減少 10 萬（負相關）。</li>
+                                            <li><strong>多元分析的威力 (實戰預測)：</strong>如果我們要幫一間「30坪、屋齡 5 年、附近有 2 個捷運站」的房子估價，代入公式：<br>
+                                            <code class="bg-gray-100 px-2 py-1 rounded ml-5 mt-1 inline-block">150 + (50 × 30) - (10 × 5) + (20 × 2) = 1640 萬元</code>。</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 互動圖表：迴歸模擬器 (新增) -->
+                            <div class="mt-6 bg-slate-900 rounded-2xl shadow-lg p-6 sm:p-8 border border-gray-800 text-white overflow-hidden relative">
+                                <!-- 背景裝飾 -->
+                                <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 opacity-20 blur-3xl pointer-events-none"></div>
+                                
+                                <div class="relative z-10">
+                                    <h4 class="text-xl font-black text-white mb-2"><i class="fa-solid fa-wand-magic-sparkles text-yellow-400 mr-2"></i> 互動演示：動態迴歸模擬器</h4>
+                                    <p class="text-sm text-gray-300 mb-6">點擊下方圖表「新增資料點」，觀察數據如何即時改變「相關係數 (r)」與「迴歸直線」。嘗試創造出高度正相關或負相關的圖形！</p>
+                                    
+                                    <div class="flex flex-col lg:flex-row gap-8 items-stretch">
+                                        <!-- 左側控制面板 -->
+                                        <div class="w-full lg:w-1/3 flex flex-col gap-4">
+                                            <!-- 即時數據顯示 -->
+                                            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                                                <div class="mb-3 pb-3 border-b border-slate-700">
+                                                    <div class="text-xs text-gray-400 font-bold mb-1">皮爾森相關係數 (r)</div>
+                                                    <div class="flex items-baseline gap-2">
+                                                        <span id="reg-r-value" class="text-3xl font-black text-emerald-400">0.00</span>
+                                                        <span id="reg-r-desc" class="text-sm text-gray-400">無相關</span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="text-xs text-gray-400 font-bold mb-1">預測迴歸方程式</div>
+                                                    <div class="bg-black bg-opacity-30 p-2 rounded text-center">
+                                                        <code id="reg-eq-value" class="text-orange-400 font-bold tracking-wider">Y = 0.00 + 0.00X</code>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- 按鈕控制區 -->
+                                            <div class="grid grid-cols-2 gap-2 mt-auto">
+                                                <button onclick="addRandomPoints('positive')" class="bg-indigo-600 hover:bg-indigo-500 text-white p-2 rounded-lg text-xs font-bold transition">
+                                                    <i class="fa-solid fa-arrow-trend-up mr-1"></i>生成正相關
+                                                </button>
+                                                <button onclick="addRandomPoints('negative')" class="bg-purple-600 hover:bg-purple-500 text-white p-2 rounded-lg text-xs font-bold transition">
+                                                    <i class="fa-solid fa-arrow-trend-down mr-1"></i>生成負相關
+                                                </button>
+                                                <button onclick="addExtremePoint()" class="bg-rose-600 hover:bg-rose-500 text-white p-2 rounded-lg text-xs font-bold transition col-span-2">
+                                                    <i class="fa-solid fa-bomb mr-1"></i>丟入極端值 (觀察拉扯)
+                                                </button>
+                                                <button onclick="clearRegressionData()" class="bg-slate-700 hover:bg-slate-600 text-white p-2 rounded-lg text-xs font-bold transition col-span-2">
+                                                    <i class="fa-solid fa-trash-can mr-1"></i>清空畫布
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 右側畫布 -->
+                                        <div class="w-full lg:w-2/3 bg-white p-2 rounded-xl cursor-crosshair relative group">
+                                            <div class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition duration-300">
+                                                <span class="bg-black bg-opacity-70 text-white text-xs px-3 py-1 rounded-full font-bold">點擊空白處新增數據點</span>
+                                            </div>
+                                            <div class="h-64 sm:h-72 w-full relative z-10" id="regressionChartContainer">
+                                                <canvas id="regressionChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 互動圖表：迴歸模擬器 結束 -->
+
+                        </div>
+                    </div>
+
+                    <!-- 測驗按鈕 -->
+                    <div class="text-center pt-4">
+                        <button onclick="startQuiz('part3')" class="bg-accent text-white px-8 py-3 rounded-xl hover:bg-yellow-600 transition font-bold shadow-md inline-flex items-center">
+                            <i class="fa-solid fa-pen-to-square mr-2"></i> 進行第三篇小測驗 (涵蓋第7-12章，共21題)
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="quiz-section" class="section-container">
+                <div class="mb-4 flex items-center justify-between">
+                    <button onclick="showSection(currentQuizPart)" class="text-gray-500 hover:text-primary font-bold">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> 返回課程
+                    </button>
+                    <h2 id="quiz-title" class="text-2xl font-black text-dark">測驗載入中...</h2>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-10 border border-gray-100 max-w-3xl mx-auto mt-4">
+                    <div id="quiz-container">
                         <!-- 進度條 -->
-                        <div class="mb-6">
-                            <div class="flex justify-between text-sm text-gray-500 mb-1">
-                                <span>進度</span>
+                        <div class="mb-8">
+                            <div class="flex justify-between text-sm text-gray-500 mb-2 font-bold">
+                                <span>答題進度</span>
                                 <span id="quiz-progress-text">1 / 10</span>
                             </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div id="quiz-progress-bar" class="bg-primary h-2 rounded-full transition-all duration-300" style="width: 10%"></div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div id="quiz-progress-bar" class="bg-accent h-3 rounded-full transition-all duration-300" style="width: 10%"></div>
                             </div>
                         </div>
 
                         <!-- 題目顯示區 -->
-                        <div id="question-container" class="min-h-[200px]">
-                            <h3 id="question-text" class="text-xl font-bold text-dark mb-6">載入題目中...</h3>
+                        <div id="question-container" class="min-h-[220px]">
+                            <h3 id="question-text" class="text-xl font-bold text-dark mb-6 leading-relaxed">載入題目中...</h3>
                             <div id="options-container" class="space-y-3">
-                                <!-- 選項按鈕會透過 JS 動態產生 -->
+                                <!-- 選項由 JS 動態產生 -->
                             </div>
                         </div>
 
                         <!-- 結果與回饋區 -->
-                        <div id="feedback-container" class="mt-6 p-4 rounded-lg hidden">
-                            <p id="feedback-text" class="font-medium"></p>
-                            <p id="feedback-explanation" class="text-sm mt-2 text-gray-700"></p>
-                            <button id="next-btn" class="mt-4 bg-primary text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition w-full sm:w-auto hidden">下一題</button>
-                            <button id="finish-btn" class="mt-4 bg-primary text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition w-full sm:w-auto hidden">查看成績</button>
+                        <div id="feedback-container" class="mt-8 p-5 rounded-xl hidden border-l-4">
+                            <p id="feedback-text" class="font-black text-lg mb-1"></p>
+                            <p id="feedback-explanation" class="text-sm text-gray-700 leading-relaxed"></p>
+                            <button id="next-btn" class="mt-5 bg-dark text-white px-6 py-2 rounded-lg hover:bg-black transition w-full font-bold hidden">下一題 <i class="fa-solid fa-arrow-right ml-1"></i></button>
                         </div>
                     </div>
                     
-                    <!-- 最終成績畫面 (初始隱藏) -->
-                    <div id="result-screen" class="text-center hidden py-8">
-                        <div class="inline-block w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-                            <i class="fa-solid fa-trophy text-4xl text-accent"></i>
+                    <!-- 最終成績畫面 -->
+                    <div id="result-screen" class="text-center hidden py-10">
+                        <div class="inline-block w-28 h-28 bg-yellow-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <i class="fa-solid fa-trophy text-5xl text-accent"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-dark mb-2">測驗完成！</h3>
-                        <p class="text-lg text-gray-600 mb-6">您的得分是：<span id="score-display" class="font-bold text-primary text-2xl"></span> / <span id="total-display"></span></p>
-                        <p id="result-message" class="text-gray-500 mb-8 font-medium"></p>
-                        <div class="flex gap-4 justify-center">
-                            <button onclick="retryCurrentQuiz()" class="bg-indigo-50 text-indigo-700 px-6 py-2 rounded-lg hover:bg-indigo-100 transition font-medium border border-indigo-200">重新測驗</button>
-                            <button onclick="backToQuizMenu()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition font-medium shadow-md">選擇其他單元</button>
+                        <h3 class="text-3xl font-black text-dark mb-3">測驗完成！</h3>
+                        <p class="text-lg text-gray-600 mb-6">您在本次測驗獲得了：<br><span id="score-display" class="font-black text-primary text-5xl mt-2 block"></span><span id="total-score-display" class="text-gray-400 text-xl block mt-1"></span></p>
+                        <p id="result-message" class="text-gray-600 mb-8 font-medium px-4"></p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <button onclick="startQuiz(currentQuizPart)" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition font-bold">重新測驗</button>
+                            <button onclick="showSection(currentQuizPart)" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition font-bold shadow-md">回到課程</button>
                         </div>
                     </div>
                 </div>
@@ -610,65 +1051,136 @@
         </main>
     </div>
 
-    <!-- 頁尾 -->
     <footer class="bg-white border-t border-gray-200 mt-auto py-6">
-        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
-            <p>© 2026 社會統計互動學習網. 依據社會統計課程內容改編設計。</p>
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-400 text-sm font-medium">
+            <p>© 2026 社會統計學習網. Designed for Educational Purposes.</p>
         </div>
     </footer>
 
+    <!-- 新增：迷你統計計算機 (實作沙盒) -->
+    <div class="fab-container">
+        <div class="stat-panel" id="statPanel">
+            <div class="flex justify-between items-center mb-3">
+                <h4 class="font-black text-indigo-800"><i class="fa-solid fa-calculator mr-2 text-indigo-500"></i>迷你統計計算機</h4>
+                <button onclick="toggleCalculator()" class="text-gray-400 hover:text-gray-700 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-gray-500 mb-2 font-bold">請輸入一組數字 (用逗號或空格隔開)：</p>
+            <textarea id="statInput" rows="2" class="w-full text-sm p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none mb-2" placeholder="例如: 80, 90, 85, 70, 95"></textarea>
+            <button onclick="calculateStats()" class="w-full bg-indigo-600 text-white text-sm font-bold py-2 rounded-lg hover:bg-indigo-700 transition shadow-sm mb-3">一鍵分析數據</button>
+            
+            <div id="statOutput" class="hidden bg-slate-50 p-3 rounded-lg border border-gray-200 text-sm space-y-2 shadow-inner">
+                <div class="flex justify-between border-b border-gray-200 pb-1"><span class="text-gray-500 font-bold">樣本數 (n):</span> <span class="font-black text-gray-800" id="out-n"></span></div>
+                <div class="flex justify-between border-b border-gray-200 pb-1"><span class="text-gray-500 font-bold">平均數 (Mean):</span> <span class="font-black text-indigo-600" id="out-mean"></span></div>
+                <div class="flex justify-between border-b border-gray-200 pb-1"><span class="text-gray-500 font-bold">中位數 (Median):</span> <span class="font-black text-emerald-600" id="out-median"></span></div>
+                <div class="flex justify-between border-b border-gray-200 pb-1"><span class="text-gray-500 font-bold">全距 (Range):</span> <span class="font-black text-gray-800" id="out-range"></span></div>
+                <div class="flex justify-between"><span class="text-gray-500 font-bold">樣本標準差 (s):</span> <span class="font-black text-rose-600" id="out-std"></span></div>
+            </div>
+            <div id="statError" class="hidden text-xs text-red-500 mt-2 font-bold text-center bg-red-50 p-2 rounded">無法計算，請確認輸入了有效的數字！</div>
+        </div>
+        <div class="fab-button" onclick="toggleCalculator()" title="打開迷你統計機">
+            <i class="fa-solid fa-calculator"></i>
+        </div>
+    </div>
+
+    <!-- 新增：成就解鎖彈窗 -->
+    <div id="badge-modal" class="fixed inset-0 bg-black bg-opacity-60 z-[100] hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl p-8 max-w-sm w-11/12 text-center transform scale-90 transition-transform duration-300 shadow-2xl border-4 border-yellow-400 relative overflow-hidden">
+            <!-- 閃耀背景效果 -->
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-yellow-300 rounded-full mix-blend-multiply filter blur-2xl opacity-50 animate-pulse"></div>
+            <div class="text-7xl mb-4 badge-animation relative z-10"><i class="fa-solid fa-medal text-yellow-400 drop-shadow-lg"></i></div>
+            <h3 class="text-2xl font-black text-dark mb-2 relative z-10">成就解鎖！</h3>
+            <p id="badge-modal-text" class="text-gray-600 mb-6 font-bold relative z-10">恭喜您獲得精熟徽章</p>
+            <button onclick="closeBadgeModal()" class="bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-indigo-700 transition w-full shadow-lg hover:-translate-y-1 relative z-10">收下徽章，繼續學習</button>
+        </div>
+    </div>
+
     <script>
-        // --- 導覽列與介面控制邏輯 ---
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        // --- 導覽與區塊切換邏輯 ---
         const mainNav = document.getElementById('main-nav');
-        
-        mobileMenuBtn.addEventListener('click', () => {
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
             mainNav.classList.toggle('hidden');
         });
 
-        function showSection(sectionId) {
-            const sections = document.querySelectorAll('.section-container');
-            sections.forEach(sec => sec.classList.remove('active'));
-            
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                link.classList.remove('active', 'bg-indigo-50', 'text-indigo-700');
-                if(link.id !== 'nav-quiz') link.classList.add('text-gray-700'); // Reset non-quiz colors
+        // --- 新增：學習歷程追蹤邏輯 ---
+        let learningProgress = JSON.parse(localStorage.getItem('socialStatsProgress')) || {
+            viewed: [],
+            badges: {}
+        };
+
+        function updateProgressUI() {
+            // 更新打勾狀態
+            learningProgress.viewed.forEach(id => {
+                const icon = document.getElementById(`status-${id}`);
+                if(icon) icon.classList.add('viewed');
+            });
+            // 更新徽章狀態
+            Object.keys(learningProgress.badges).forEach(part => {
+                if(learningProgress.badges[part]) {
+                    const badge = document.getElementById(`badge-${part}`);
+                    if(badge) badge.classList.add('earned');
+                }
             });
             
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) targetSection.classList.add('active');
+            // 更新總進度條 (計算 home + 3個part 的達成率)
+            const totalSections = 4;
+            let viewedCount = learningProgress.viewed.filter(id => ['home', 'part1', 'part2', 'part3'].includes(id)).length;
+            const percentage = Math.round((viewedCount / totalSections) * 100);
+            const progressBar = document.getElementById('nav-progress-bar');
+            const progressText = document.getElementById('nav-progress-text');
             
-            const activeNav = document.getElementById(`nav-${sectionId}`);
-            if (activeNav) {
-                activeNav.classList.add('active');
-                if(sectionId === 'quiz') {
-                    activeNav.classList.add('bg-indigo-50', 'text-indigo-700');
+            if(progressBar && progressText) {
+                progressBar.style.width = `${percentage}%`;
+                progressText.innerText = percentage;
+                // 若全達成，改變顏色
+                if(percentage === 100) progressBar.classList.replace('bg-indigo-600', 'bg-emerald-500');
+            }
+        }
+
+        function markAsViewed(sectionId) {
+            if(['home', 'part1', 'part2', 'part3'].includes(sectionId)) {
+                if(!learningProgress.viewed.includes(sectionId)) {
+                    learningProgress.viewed.push(sectionId);
+                    localStorage.setItem('socialStatsProgress', JSON.stringify(learningProgress));
+                    updateProgressUI();
                 }
             }
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section-container').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            
+            const target = document.getElementById(sectionId);
+            if (target) target.classList.add('active');
+            
+            const navLink = document.getElementById(`nav-${sectionId}`);
+            if (navLink) navLink.classList.add('active');
 
             if (window.innerWidth < 768) mainNav.classList.add('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // 標記為已讀並更新進度
+            markAsViewed(sectionId);
+
+            // 確保圖表在顯示時正確渲染
+            if(sectionId === 'part2') {
+                if(centralChartInstance) centralChartInstance.update();
+                if(normalChartInstance) normalChartInstance.update();
+                demoCharts.forEach(chart => { if(chart) chart.update(); });
+            }
         }
 
-        // --- 互動圖表 1: 敘述統計 (極端值影響) ---
-        let centralData = [3, 4, 4, 5, 6]; // 初始薪資資料 (萬)
+        // --- 第二篇：互動圖表 1 (極端值) ---
+        let centralData = [60, 65, 70, 75, 80]; 
         let centralChartInstance = null;
 
         function updateCentralStats() {
-            const sortedData = [...centralData].sort((a, b) => a - b);
-            const sum = sortedData.reduce((a, b) => a + b, 0);
-            const mean = sum / sortedData.length;
+            const sorted = [...centralData].sort((a, b) => a - b);
+            const mean = sorted.reduce((a, b) => a + b, 0) / sorted.length;
+            let median = sorted.length % 2 !== 0 ? sorted[Math.floor(sorted.length/2)] : (sorted[Math.floor(sorted.length/2)-1] + sorted[Math.floor(sorted.length/2)])/2;
             
-            let median;
-            const mid = Math.floor(sortedData.length / 2);
-            if (sortedData.length % 2 !== 0) median = sortedData[mid];
-            else median = (sortedData[mid - 1] + sortedData[mid]) / 2;
-
-            document.getElementById('dataDisplay').innerText = sortedData.map(v => v + '萬').join(', ');
-            document.getElementById('meanValue').innerText = mean.toFixed(1) + '萬';
-            document.getElementById('medianValue').innerText = median.toFixed(1) + '萬';
-
+            document.getElementById('meanValue').innerText = mean.toFixed(1);
+            document.getElementById('medianValue').innerText = median.toFixed(1);
             return { mean, median };
         }
 
@@ -676,69 +1188,45 @@
             const ctx = document.getElementById('centralTendencyChart').getContext('2d');
             const stats = updateCentralStats();
             
-            const pointCounts = {};
-            centralData.forEach(val => { pointCounts[val] = (pointCounts[val] || 0) + 1; });
-            
+            const counts = {};
+            centralData.forEach(v => counts[v] = (counts[v] || 0) + 1);
             const scatterData = [];
-            for (const val in pointCounts) {
-                for(let i=0; i<pointCounts[val]; i++){
-                     scatterData.push({ x: Number(val), y: i + 1 });
-                }
+            for (const v in counts) {
+                for(let i=0; i<counts[v]; i++) scatterData.push({ x: Number(v), y: i + 1 });
             }
 
             if (centralChartInstance) centralChartInstance.destroy();
-
-            // 判斷是否需要擴大X軸 (當郭董進來時)
-            const hasExtreme = centralData.some(v => v > 50);
-            const xMax = hasExtreme ? 550 : 15;
 
             centralChartInstance = new Chart(ctx, {
                 type: 'scatter',
                 data: {
                     datasets: [{
-                        label: '薪資數據點(萬)',
-                        data: scatterData,
-                        backgroundColor: '#6B7280', 
-                        pointRadius: 8,
-                        pointHoverRadius: 10
+                        label: '數據點', data: scatterData, backgroundColor: '#94a3b8', pointRadius: 6, pointHoverRadius: 8
                     }]
                 },
                 options: {
-                    layout: {
-                        padding: { top: 35 } // 增加上方留白空間，避免文字被圖表邊緣切掉
-                    },
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => c.parsed.x + '萬' } } },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        x: { min: 0, max: xMax, title: { display: true, text: '月薪 (萬元)' } },
+                        x: { min: 0, max: 110, title: { display: true, text: '數值' } },
                         y: { min: 0, max: 5, display: false }
                     },
                     animation: {
                         onComplete: function() {
-                            const chartArea = this.chartArea;
-                            const ctx = this.ctx;
-                            const xScale = this.scales.x;
-                            
+                            const {ctx, chartArea, scales: {x}} = this;
                             const drawLine = (val, color, label) => {
-                                const xPos = xScale.getPixelForValue(val);
+                                const xPos = x.getPixelForValue(val);
                                 if(xPos >= chartArea.left && xPos <= chartArea.right) {
-                                    ctx.save(); ctx.beginPath(); ctx.moveTo(xPos, chartArea.top); ctx.lineTo(xPos, chartArea.bottom);
+                                    ctx.save();
+                                    ctx.beginPath(); ctx.moveTo(xPos, chartArea.top); ctx.lineTo(xPos, chartArea.bottom);
                                     ctx.lineWidth = 2; ctx.strokeStyle = color; ctx.setLineDash([5, 5]); ctx.stroke();
-                                    ctx.fillStyle = color; ctx.font = 'bold 14px Inter'; ctx.textAlign = 'center';
-                                    
-                                    // 背景框讓文字清楚，並利用 padding 空間將文字往上推
-                                    ctx.fillStyle = 'rgba(255,255,255,0.9)';
-                                    const textWidth = ctx.measureText(label).width;
-                                    ctx.fillRect(xPos - textWidth/2 - 6, chartArea.top - 28, textWidth + 12, 24);
-                                    
-                                    ctx.fillStyle = color;
-                                    ctx.textBaseline = 'middle';
-                                    ctx.fillText(label, xPos, chartArea.top - 16);
+                                    ctx.fillStyle = color; ctx.font = 'bold 12px Inter'; ctx.textAlign = 'center';
+                                    ctx.fillText(label, xPos, chartArea.top - 5);
                                     ctx.restore();
                                 }
                             };
-                            drawLine(stats.mean, '#4F46E5', '平均薪資'); 
-                            drawLine(stats.median, '#10B981', '薪資中位數'); 
+                            drawLine(stats.mean, '#4338ca', '平均'); 
+                            drawLine(stats.median, '#0d9488', '中位'); 
                         }
                     }
                 }
@@ -746,93 +1234,144 @@
         }
 
         document.getElementById('addDataBtn').addEventListener('click', () => {
-            const input = document.getElementById('newDataInput');
-            const val = parseFloat(input.value);
-            if (!isNaN(val) && val >= 0) {
-                if(centralData.length >= 15) return;
+            const val = parseFloat(document.getElementById('newDataInput').value);
+            if (!isNaN(val) && val >= 0 && val <= 100 && centralData.length < 20) {
                 centralData.push(val);
-                input.value = '';
+                document.getElementById('newDataInput').value = '';
                 drawCentralChart();
             }
         });
-
         document.getElementById('addExtremeHighBtn').addEventListener('click', () => {
-            centralData.push(500); // 郭董的 500萬
-            drawCentralChart();
+            if(centralData.length < 20) { centralData.push(100); drawCentralChart(); }
         });
-
         document.getElementById('resetDataBtn').addEventListener('click', () => {
-            centralData = [3, 4, 4, 5, 6];
-            drawCentralChart();
+            centralData = [60, 65, 70, 75, 80]; drawCentralChart();
         });
 
-        // --- 互動圖表 2: 常態分配 ---
+
+        // --- 第二篇：互動圖表 2 (常態分配) ---
         let normalChartInstance = null;
-        function normalPDF(x, mean, stdDev) {
-            const variance = stdDev * stdDev;
-            return (Math.exp(-Math.pow(x - mean, 2) / (2 * variance))) / Math.sqrt(2 * Math.PI * variance);
-        }
+        function normalPDF(x, m, s) { return Math.exp(-Math.pow(x-m,2)/(2*s*s)) / Math.sqrt(2*Math.PI*s*s); }
 
         function drawNormalChart() {
-            const mean = parseFloat(document.getElementById('meanSlider').value);
-            const stdDev = parseFloat(document.getElementById('stdDevSlider').value);
-            document.getElementById('meanDisplay').innerText = mean;
-            document.getElementById('stdDevDisplay').innerText = stdDev;
+            const m = parseFloat(document.getElementById('meanSlider').value);
+            const s = parseFloat(document.getElementById('stdDevSlider').value);
+            document.getElementById('meanDisplay').innerText = m;
+            document.getElementById('stdDevDisplay').innerText = s;
 
-            const labels = []; const data = [];
-            for (let x = -10; x <= 10; x += 0.2) {
-                labels.push(x.toFixed(1));
-                data.push(normalPDF(x, mean, stdDev));
-            }
+            const labels = [], data = [];
+            for (let x = -10; x <= 10; x += 0.2) { labels.push(x.toFixed(1)); data.push(normalPDF(x, m, s)); }
 
             const ctx = document.getElementById('normalDistChart').getContext('2d');
             if (normalChartInstance) normalChartInstance.destroy();
-            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(79, 70, 229, 0.4)'); gradient.addColorStop(1, 'rgba(79, 70, 229, 0.0)');
+
+            let grad = ctx.createLinearGradient(0, 0, 0, 300);
+            grad.addColorStop(0, 'rgba(67, 56, 202, 0.4)'); grad.addColorStop(1, 'rgba(67, 56, 202, 0.0)');
 
             normalChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
-                    datasets: [{
-                        label: '常態曲線', data: data, borderColor: '#4F46E5', borderWidth: 3, backgroundColor: gradient, fill: true, pointRadius: 0, tension: 0.4
+                    labels, datasets: [{
+                        data, borderColor: '#4338ca', borderWidth: 3, backgroundColor: grad, fill: true, pointRadius: 0, tension: 0.4
                     }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false }, tooltip: { enabled: false } },
                     scales: {
-                        x: { title: { display: true, text: 'Z分數 (標準差距離)' }, ticks: { maxTicksLimit: 11 } },
-                        y: { title: { display: true, text: '機率密度' }, min: 0, max: 0.8 }
+                        x: { ticks: { maxTicksLimit: 11 } },
+                        y: { min: 0, max: 0.8, display: false }
                     },
-                    animation: { duration: 300 }
+                    animation: { duration: 0 }
                 }
             });
         }
         document.getElementById('meanSlider').addEventListener('input', drawNormalChart);
         document.getElementById('stdDevSlider').addEventListener('input', drawNormalChart);
 
-        // --- 互動圖表 3: 抽樣方法 ---
-        const popSize = 50;
-        const strataColors = ['bg-red-200 text-red-800 border-red-300', 'bg-blue-200 text-blue-800 border-blue-300', 'bg-green-200 text-green-800 border-green-300', 'bg-yellow-200 text-yellow-800 border-yellow-400', 'bg-purple-200 text-purple-800 border-purple-300'];
-        const selClass = 'ring-4 ring-dark scale-110 shadow-lg z-10';
+        // --- 第二篇：第3章 統計圖表範例 ---
+        let demoCharts = [];
+        function initDemoCharts() {
+            // 1. 長條圖
+            demoCharts.push(new Chart(document.getElementById('demoBarChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['無糖', '微糖', '半糖', '全糖'],
+                    datasets: [{ label: '人數', data: [45, 30, 15, 10], backgroundColor: '#4338ca', borderRadius: 4 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            }));
+            
+            // 2. 圓餅圖
+            demoCharts.push(new Chart(document.getElementById('demoPieChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['大學', '高中', '碩士', '其他'],
+                    datasets: [{ data: [45, 25, 20, 10], backgroundColor: ['#0d9488', '#14b8a6', '#2dd4bf', '#99f6e4'] }]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 10 } } } },
+                    cutout: '60%'
+                }
+            }));
+            
+            // 3. 直方圖 (調整條距模擬直方圖)
+            demoCharts.push(new Chart(document.getElementById('demoHistogram').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['40-50', '50-60', '60-70', '70-80', '80-90'],
+                    datasets: [{ 
+                        label: '人數', data: [2, 8, 15, 22, 5], 
+                        backgroundColor: '#d97706', 
+                        barPercentage: 1.0, categoryPercentage: 1.0, // 讓長條相連
+                        borderColor: '#ffffff', borderWidth: 1
+                    }]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } },
+                    scales: { x: { grid: { offset: false } } } // 取消X軸網格偏移
+                }
+            }));
+            
+            // 4. 折線圖
+            demoCharts.push(new Chart(document.getElementById('demoLineChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024'],
+                    datasets: [{ 
+                        label: '生育率', data: [1.3, 1.25, 1.2, 1.15, 1.1], 
+                        borderColor: '#e11d48', borderWidth: 3, 
+                        tension: 0.3, pointBackgroundColor: '#e11d48', fill: false
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            }));
+        }
 
-        function initPopulationGrid() {
+
+        // --- 第三篇：抽樣模擬器 ---
+        const popSize = 50;
+        const strataColors = ['bg-red-200 text-red-800', 'bg-blue-200 text-blue-800', 'bg-green-200 text-green-800', 'bg-yellow-200 text-yellow-800', 'bg-purple-200 text-purple-800'];
+        
+        function initPopGrid() {
             const grid = document.getElementById('population-grid');
             grid.innerHTML = '';
             for (let i = 0; i < popSize; i++) {
-                const p = document.createElement('div');
-                p.className = `pop-unit h-10 w-full rounded-md flex items-center justify-center text-sm font-bold transition-all duration-300 border ${strataColors[Math.floor(i / 10)]}`;
-                p.innerText = i + 1; p.id = `p-${i}`;
-                grid.appendChild(p);
+                const el = document.createElement('div');
+                el.className = `pop-unit h-6 w-full rounded flex items-center justify-center text-xs font-bold transition-all duration-300 ${strataColors[Math.floor(i / 10)]}`;
+                el.innerText = i + 1;
+                el.id = `person-${i}`;
+                grid.appendChild(el);
             }
             document.getElementById('sample-count').innerText = 0;
         }
 
         function resetSampling() {
             document.querySelectorAll('.pop-unit').forEach(u => {
-                u.className = u.className.replace(selClass, '');
-                u.style.opacity = '1'; u.style.transform = 'scale(1)';
+                u.classList.remove('ring-4', 'ring-dark', 'scale-125', 'z-10', 'shadow-md');
+                u.style.opacity = '1';
             });
             document.getElementById('sample-count').innerText = 0;
         }
@@ -840,215 +1379,462 @@
         function simulateSampling(method) {
             resetSampling();
             const units = document.querySelectorAll('.pop-unit');
-            let selIdx = [];
             units.forEach(u => u.style.opacity = '0.3');
-
+            
+            let selected = [];
             if (method === 'srs') {
                 let pool = Array.from({length: popSize}, (_, i) => i);
-                for(let i=0; i<10; i++) {
-                    const r = Math.floor(Math.random() * pool.length);
-                    selIdx.push(pool[r]); pool.splice(r, 1);
-                }
+                for(let i=0; i<10; i++) selected.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
             } else if (method === 'sys') {
                 const start = Math.floor(Math.random() * 5);
-                for(let i = start; i < popSize; i += 5) selIdx.push(i);
+                for(let i = start; i < popSize; i += 5) selected.push(i);
             } else if (method === 'str') {
                 for(let s = 0; s < 5; s++) {
                     let pool = Array.from({length: 10}, (_, i) => (s * 10) + i);
-                    for(let i=0; i<2; i++) {
-                        const r = Math.floor(Math.random() * pool.length);
-                        selIdx.push(pool[r]); pool.splice(r, 1);
-                    }
+                    for(let i=0; i<2; i++) selected.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
                 }
             } else if (method === 'clu') {
                 const cIdx = Math.floor(Math.random() * 5);
-                for(let i = 0; i < 10; i++) selIdx.push((cIdx * 10) + i);
+                for(let i = 0; i < 10; i++) selected.push((cIdx * 10) + i);
             }
 
-            selIdx.sort((a,b) => a-b).forEach((idx, i) => {
+            selected.sort((a,b)=>a-b).forEach((idx, i) => {
                 setTimeout(() => {
-                    const u = document.getElementById(`p-${idx}`);
-                    u.style.opacity = '1'; u.className = `${u.className} ${selClass}`;
+                    const u = document.getElementById(`person-${idx}`);
+                    u.style.opacity = '1';
+                    u.classList.add('ring-2', 'ring-dark', 'scale-110', 'z-10', 'shadow-md');
                     document.getElementById('sample-count').innerText = i + 1;
                 }, i * 150);
             });
         }
 
-        const fullQuizDB = {
+        // --- 第三篇：迴歸與相關模擬器 ---
+        let regChartInstance = null;
+        let regDataPoints = []; // 儲存 {x, y}
+
+        // 計算相關係數與線性迴歸
+        function calculateRegression() {
+            if (regDataPoints.length < 2) return { r: 0, a: 0, b: 0, empty: true };
+            
+            let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0, sumY2 = 0;
+            const n = regDataPoints.length;
+            
+            regDataPoints.forEach(p => {
+                sumX += p.x;
+                sumY += p.y;
+                sumXY += p.x * p.y;
+                sumX2 += p.x * p.x;
+                sumY2 += p.y * p.y;
+            });
+            
+            const meanX = sumX / n;
+            const meanY = sumY / n;
+            
+            // 計算 b (斜率) 和 a (截距)
+            const denominator = (sumX2 - (sumX * sumX) / n);
+            let b = 0;
+            if (denominator !== 0) {
+                b = (sumXY - (sumX * sumY) / n) / denominator;
+            }
+            const a = meanY - b * meanX;
+            
+            // 計算 r (相關係數)
+            let r = 0;
+            const denomR = Math.sqrt((sumX2 - (sumX * sumX) / n) * (sumY2 - (sumY * sumY) / n));
+            if (denomR !== 0) {
+                r = (sumXY - (sumX * sumY) / n) / denomR;
+            }
+            
+            return { r, a, b, empty: false };
+        }
+
+        function updateRegressionUI(stats) {
+            const rEl = document.getElementById('reg-r-value');
+            const descEl = document.getElementById('reg-r-desc');
+            const eqEl = document.getElementById('reg-eq-value');
+            
+            if (stats.empty) {
+                rEl.innerText = "0.00";
+                rEl.className = "text-3xl font-black text-gray-400";
+                descEl.innerText = "資料不足";
+                eqEl.innerText = "Y = 0.00 + 0.00X";
+                return;
+            }
+
+            // 更新 r 值與顏色
+            rEl.innerText = stats.r.toFixed(2);
+            let colorClass = "text-gray-400";
+            let desc = "無相關";
+            
+            if (stats.r > 0.7) { colorClass = "text-emerald-400"; desc = "高度正相關"; }
+            else if (stats.r > 0.3) { colorClass = "text-emerald-300"; desc = "中低度正相關"; }
+            else if (stats.r < -0.7) { colorClass = "text-rose-400"; desc = "高度負相關"; }
+            else if (stats.r < -0.3) { colorClass = "text-rose-300"; desc = "中低度負相關"; }
+            
+            rEl.className = `text-3xl font-black ${colorClass}`;
+            descEl.innerText = desc;
+            
+            // 更新方程式
+            const sign = stats.b >= 0 ? '+' : '-';
+            eqEl.innerText = `Y = ${stats.a.toFixed(2)} ${sign} ${Math.abs(stats.b).toFixed(2)}X`;
+        }
+
+        function drawRegressionChart() {
+            const ctx = document.getElementById('regressionChart').getContext('2d');
+            const stats = calculateRegression();
+            
+            // 準備迴歸線的資料點
+            let lineData = [];
+            if (!stats.empty && regDataPoints.length >= 2) {
+                lineData = [
+                    { x: 0, y: stats.a },
+                    { x: 100, y: stats.a + stats.b * 100 }
+                ];
+            }
+
+            if (regChartInstance) regChartInstance.destroy();
+
+            regChartInstance = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: '資料點',
+                            data: regDataPoints,
+                            backgroundColor: '#4f46e5',
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            order: 2
+                        },
+                        {
+                            label: '迴歸直線',
+                            type: 'line',
+                            data: lineData,
+                            borderColor: '#f97316', // Orange 500
+                            borderWidth: 3,
+                            borderDash: [5, 5],
+                            fill: false,
+                            pointRadius: 0,
+                            order: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 200 },
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { min: 0, max: 100, title: { display: true, text: '自變數 X' } },
+                        y: { min: 0, max: 100, title: { display: true, text: '應變數 Y' } }
+                    },
+                    onClick: (e) => {
+                        // 處理點擊新增資料點
+                        const canvasPosition = Chart.helpers.getRelativePosition(e, regChartInstance);
+                        const dataX = regChartInstance.scales.x.getValueForPixel(canvasPosition.x);
+                        const dataY = regChartInstance.scales.y.getValueForPixel(canvasPosition.y);
+                        
+                        if (dataX >= 0 && dataX <= 100 && dataY >= 0 && dataY <= 100) {
+                            regDataPoints.push({ x: dataX, y: dataY });
+                            drawRegressionChart();
+                        }
+                    }
+                }
+            });
+            
+            updateRegressionUI(stats);
+        }
+
+        // 按鈕功能
+        function clearRegressionData() {
+            regDataPoints = [];
+            drawRegressionChart();
+        }
+
+        function addRandomPoints(type) {
+            clearRegressionData();
+            const count = 15;
+            for (let i = 0; i < count; i++) {
+                let x = Math.random() * 80 + 10;
+                let y;
+                if (type === 'positive') {
+                    y = x + (Math.random() * 40 - 20); // 加上雜訊
+                } else {
+                    y = (100 - x) + (Math.random() * 40 - 20);
+                }
+                // 確保在 0-100 範圍內
+                y = Math.max(5, Math.min(95, y));
+                regDataPoints.push({ x, y });
+            }
+            drawRegressionChart();
+        }
+
+        function addExtremePoint() {
+            if (regDataPoints.length === 0) addRandomPoints('positive');
+            // 在右下角加入一個極端值 (會大幅拉扯迴歸線)
+            regDataPoints.push({ x: 95, y: 5 });
+            drawRegressionChart();
+        }
+
+        // --- STREAMING_CHUNK: 測驗資料與邏輯 (3大單元，各10題) ---
+        const quizzesData = {
             part1: [
-                { q: "社會統計最主要的目的是什麼？", options: ["用直覺判斷社會現象", "將人類行為與社會現象量化，透過數據尋找規律", "為了讓數學變複雜", "計算每個人具體的財產"], a: 1, exp: "社會統計旨在利用科學、客觀的數據與量化方法，幫助我們理解和預測社會現象。" },
-                { q: "在民意調查中，我們打電話訪問到的1068位有效受訪者，稱之為什麼？", options: ["母體", "參數", "樣本", "抽樣誤差"], a: 2, exp: "實際被抽出並進行調查的一小群人稱為「樣本」。所有有投票權的公民才是「母體」。" },
-                { q: "「請問您的血型是：(1)A型 (2)B型 (3)O型 (4)AB型」，這是屬於哪一種測量層次？", options: ["名義尺度 (Nominal)", "次序尺度 (Ordinal)", "等距尺度 (Interval)", "等比尺度 (Ratio)"], a: 0, exp: "血型只能用作「分類」，數字間沒有高低、大小之分，因此是名義尺度。" },
-                { q: "「教育程度：(1)國中 (2)高中 (3)大學 (4)研究所」，這屬於哪一種測量層次？", options: ["名義尺度", "次序尺度", "等距尺度", "等比尺度"], a: 1, exp: "教育程度有高低順序之分，但不同教育程度之間的「間距」不一定相等，故為次序尺度。" },
-                { q: "下列哪一種變數尺度，可以進行加減乘除所有數學運算，且具有「絕對零點」？", options: ["名義尺度", "次序尺度", "等距尺度", "等比尺度"], a: 3, exp: "等比尺度(Ratio)擁有絕對零點（0代表真的沒有），如身高、體重、收入，可進行乘除比較（如收入是別人的兩倍）。" },
-                { q: "「攝氏溫度」屬於等距尺度，這是因為它缺乏什麼特性？", options: ["缺乏順序性", "間距不相等", "缺乏絕對零點", "無法進行加減"], a: 2, exp: "攝氏0度並不代表「沒有溫度」，所以它沒有絕對零點，我們不能說20度是10度的「兩倍」熱。" },
-                { q: "設計問卷時，如果問題會引導受訪者回答特定答案，這違背了量化研究的什麼原則？", options: ["主觀性原則", "客觀與中立性", "假設檢定原則", "隨機抽樣原則"], a: 1, exp: "問卷題目必須保持客觀中立，不可帶有預設立場或引導性字眼，否則會造成測量誤差。" },
-                { q: "我們常說的「研究假說 (Hypothesis)」，在統計分析前是透過什麼方式建立的？", options: ["亂猜的", "基於過去的理論與文獻探討", "電腦隨機產生的", "等資料收集完再想"], a: 1, exp: "研究假說是研究者基於過去理論或文獻，對變數之間的關係提出的暫時性預測。" },
-                { q: "將問卷上文字的答案，轉換成電腦能處理的數字（例如 男=1, 女=2），這個動作稱為？", options: ["抽樣", "統計", "編碼 (Coding)", "檢定"], a: 2, exp: "編碼是將蒐集到的資料轉化為數字代碼，以便輸入電腦統計軟體（如SPSS）進行分析。" },
-                { q: "下列關於量化研究的邏輯，何者正確？", options: ["先收集資料，再看看能發現什麼理論", "不須建立假設即可直接統計", "由理論推導假設，收集數據檢驗，最後得出結論", "樣本越小越好分析"], a: 2, exp: "量化研究通常走「演繹法」邏輯：理論 -> 假設 -> 觀察(收集數據) -> 證實/推翻假設。" }
+                // 第 1 章：緒論與基本的統計概念 (4題)
+                { q: "[第1章] 關於「母體」與「樣本」的敘述，何者正確？", o: ["母體是從樣本中抽出的部分個體", "樣本是從母體中抽出的部分個體，用以推論母體", "社會科學研究通常都能直接普查母體", "樣本數等於母體數"], a: 1, e: "因為普查母體曠日費時，所以我們通常抽取「樣本」來推論「母體」。" },
+                { q: "[第1章] 研究「每週運動時數」是否會影響「期末考成績」，請問「每週運動時數」是什麼變數？", o: ["自變數 (IV)", "依變數 (DV)", "控制變數", "干擾變數"], a: 0, e: "自變數代表「原因」或研究者操弄的前提；依變數代表受影響的「結果」(此例為成績)。" },
+                { q: "[第1章] 「宗教信仰」(佛教、基督教、伊斯蘭教等) 屬於哪一種測量尺度？", o: ["名義尺度 (Nominal)", "次序尺度 (Ordinal)", "等距尺度 (Interval)", "等比尺度 (Ratio)"], a: 0, e: "宗教信仰只做「分類」，數字間沒有高低、大小之分，因此是名義尺度。" },
+                { q: "[第1章] 「溫度(攝氏)」屬於等距尺度，因為它具備何種特性？", o: ["沒有順序大小", "差距有意義，但沒有絕對的零", "有絕對的零，可計算倍數", "只能用來分類"], a: 1, e: "攝氏0度並不代表「沒有溫度」(無絕對零點)，我們不能說20度是10度的兩倍熱。" },
+                // 第 2 章：問卷設計與資料蒐集實務 (4題)
+                { q: "[第2章] 確保問卷題目「確實測量到研究者想要測量的概念」，這是指測量工具的？", o: ["信度 (Reliability)", "效度 (Validity)", "難度", "鑑別度"], a: 1, e: "效度指的是「準確性、有效性」，也就是有沒有測到你想測的東西。" },
+                { q: "[第2章] 某份智力測驗，同一個學生今天測和明天測的分數都一樣，代表這份測驗具有良好的？", o: ["效度 (Validity)", "信度 (Reliability)", "代表性", "隨機性"], a: 1, e: "信度指的是測量結果的「一致性與穩定性」。" },
+                { q: "[第2章] 問卷題目：「您是否滿意本校的餐廳衛生與圖書館設備？」，這犯了什麼設計錯誤？", o: ["引導性用語", "雙重問題 (Double-barreled)", "選項不互斥", "選項不窮盡"], a: 1, e: "這是一題裡面問了「餐廳衛生」和「圖書館設備」兩件事，會讓填答者不知如何作答。" },
+                { q: "[第2章] 「多數專家都認為運動有益健康，您也這麼認為嗎？」這種類型的題目稱為什麼？", o: ["開放式問題", "雙重問題", "引導性用語 (Leading Question)", "矩陣題"], a: 2, e: "題目中加入了「多數專家認為...」帶有預設立場，會迫使受訪者選擇特定答案。" }
             ],
             part2: [
-                { q: "新聞報導「國民平均月薪突破 6 萬元」，但大多數民眾卻覺得自己沒領這麼多。請問這是因為「平均數」有什麼缺點？", options: ["計算太困難", "容易受到少數極端高薪者的影響而被拉高", "不包含沒有工作的人", "平均數是不科學的指標"], a: 1, exp: "平均數(Mean)非常容易受到極端值(Outliers)的影響。少數富豪會大幅拉高平均值。" },
-                { q: "呈上題，為了解決極端值的問題，政府與學者通常更傾向公布哪一個統計指標來代表一般人的薪資水準？", options: ["眾數", "標準差", "中位數", "全距"], a: 2, exp: "中位數(Median)是將資料由小排到大，取最中間的數值。它不受兩端極端值的影響，更能代表多數人的狀況。" },
-                { q: "「眾數 (Mode)」的定義是什麼？", options: ["資料加總除以個數", "資料排序後最中間的值", "資料中出現次數最多的數值", "最大值減去最小值"], a: 2, exp: "眾數就是發生頻率(次數)最高的值。在名義尺度(如最受歡迎的飲料口味)中最常使用。" },
-                { q: "用來測量資料分散程度的指標中，最簡單粗暴，只看最大值和最小值差距的是？", options: ["變異數", "標準差", "全距 (Range)", "四分位距"], a: 2, exp: "全距 = 最大值 - 最小值。缺點是完全忽略了中間資料的分佈狀況。" },
-                { q: "在描述性統計中，最常被用來表示「資料離散程度(差異性)」的指標是哪一個？", options: ["平均數", "標準差 (Standard Deviation)", "眾數", "中位數"], a: 1, exp: "標準差是變異數的平方根，與原資料單位相同，用來衡量資料偏離平均數的平均距離，數字越大代表資料越分散。" },
-                { q: "標準常態分配 (Standard Normal Distribution) 的平均數和標準差分別是多少？", options: ["平均數=1, 標準差=0", "平均數=0, 標準差=1", "平均數=100, 標準差=15", "平均數=0, 標準差=0"], a: 1, exp: "標準常態分配是將一般常態分配經過標準化(Z轉換)後的結果，其特性為 μ=0, σ=1。" },
-                { q: "常態分配的圖形特徵不包含下列哪一項？", options: ["左右對稱的鐘型", "平均數、中位數、眾數三者相等", "曲線兩端無限延伸不碰到X軸", "圖形會偏向右方(右偏)"], a: 3, exp: "常態分配是完美對稱的，不會有左偏或右偏的情況。" },
-                { q: "根據常態分配的經驗法則 (68-95-99.7 法則)，大約有 95% 的觀測值會落在什麼範圍內？", options: ["平均數 ± 1個標準差", "平均數 ± 2個標準差", "平均數 ± 3個標準差", "大於平均數以上"], a: 1, exp: "±1個標準差約佔68%；±2個標準差約佔95%；±3個標準差約佔99.7%。" },
-                { q: "小明國文考80分(班平均70, 標準差5)，數學考75分(班平均60, 標準差10)。透過計算 Z 分數，小明哪一科的相對表現比較好？", options: ["國文", "數學", "一樣好", "無法比較"], a: 0, exp: "國文 Z = (80-70)/5 = +2；數學 Z = (75-60)/10 = +1.5。國文的Z分數較高，代表在班上相對表現更好。" },
-                { q: "下列哪一種圖表最適合用來呈現「等比尺度」(連續變數，如身高、體重) 的次數分配狀況？", options: ["圓餅圖 (Pie Chart)", "直方圖 (Histogram)", "長條圖 (Bar Chart)", "散佈圖 (Scatter Plot)"], a: 1, exp: "直方圖用來展示連續變數的區間次數分配，長條之間相連；長條圖則適用於類別變數，長條之間分開。" }
+                // 第 3 章：資料的組織與圖表整理 (3題)
+                { q: "[第3章] 想呈現台灣各年齡層人口「佔總人口的比例」，最適合用哪種圖表？", o: ["折線圖", "散佈圖", "圓餅圖 (Pie Chart)", "直方圖"], a: 2, e: "圓餅圖最適合用來呈現類別資料的組成比例（百分比）。" },
+                { q: "[第3章] 想要呈現「連續型變數」(如全校學生的身高分佈區間)，最適合的圖表是？", o: ["長條圖 (Bar Chart)", "直方圖 (Histogram)", "圓餅圖", "雷達圖"], a: 1, e: "直方圖用來展示連續變數的區間次數分配，長條之間相連；長條圖則長條分開，適用於類別變數。" },
+                { q: "[第3章] 在次數分配表中，將各組的次數由小到大累加，主要目的是為了方便計算什麼？", o: ["眾數", "平均數", "變異數", "百分位數 (或 PR 值)"], a: 3, e: "累積次數可以讓我們快速知道「有多少人的分數低於某個數值」，是計算百分位數的基礎。" },
+                // 第 4 章：集中趨勢與離散趨勢 (3題)
+                { q: "[第4章] 公司有10個員工，其中9人月薪3萬，老闆月薪300萬。哪一個統計量最能代表「一般員工」的薪資水準？", o: ["平均數", "中位數", "全距", "標準差"], a: 1, e: "平均數極易受極端值(老闆的300萬)影響。中位數不受極端值影響，更能代表多數人的狀況。" },
+                { q: "[第4章] 當資料呈現「右偏 (正偏態)」時(例如全國財富分配)，平均數與中位數的關係通常為何？", o: ["平均數 < 中位數", "平均數 = 中位數", "平均數 > 中位數", "無法比較"], a: 2, e: "右偏代表少數極端高分拉長了右邊的尾巴，這會把「平均數」往右拉高，使其大於中位數。" },
+                { q: "[第4章] 找出資料中「出現最多次」的數值，這個指標稱為？", o: ["平均數", "中位數", "眾數 (Mode)", "標準差"], a: 2, e: "眾數就是發生頻率(次數)最高的值。在名義尺度中最常使用。" },
+                // 第 5 章：離散趨勢 (3題)
+                { q: "[第5章] 「最大值減去最小值」，這是哪一種離散趨勢的測量指標？", o: ["變異數", "標準差", "全距 (Range)", "四分位距"], a: 2, e: "全距 = 最大值 - 最小值。缺點是完全忽略了中間資料的分佈狀況。" },
+                { q: "[第5章] 若甲班數學成績的標準差為 5，乙班為 15，代表什麼意義？", o: ["甲班整體程度較好", "乙班整體程度較好", "甲班學生間的實力差距較大", "乙班學生間的實力差距較大"], a: 3, e: "標準差越大，代表資料越分散（偏離平均數的距離越遠），即學生間的成績落差較大。" },
+                { q: "[第5章] 「數值與平均數差值的平方和平均」，這是什麼統計量的定義？", o: ["變異數 (Variance)", "標準差", "全距", "Z分數"], a: 0, e: "變異數是測量離散程度的基礎，將其「開根號」後就會得到我們最常用的「標準差」。" },
+                // 第 6 章：常態分配 (4題)
+                { q: "[第6章] 關於「常態分配」的特性，下列何者「錯誤」？", o: ["左右完美對稱呈鐘型", "平均數、中位數、眾數三者相等", "曲線的兩端會碰到 X 軸", "偏態係數為0"], a: 2, e: "常態曲線的兩端會向外無限延伸，永遠「不會」碰到 X 軸（漸近線）。" },
+                { q: "[第6章] 根據 68-95-99.7 經驗法則，約有多少比例的資料會落在「平均數 ± 2個標準差」的範圍內？", o: ["50%", "68%", "95%", "99.7%"], a: 2, e: "±1個標準差約佔68%；±2個標準差約佔95%；±3個標準差約佔99.7%。" },
+                { q: "[第6章] 小明國文考80分(班平均70,標準差5)，數學考75分(班平均60,標準差10)。哪一科相對表現較好？", o: ["國文", "數學", "一樣好", "無法比較"], a: 0, e: "國文 Z = (80-70)/5 = +2；數學 Z = (75-60)/10 = +1.5。國文的Z分數較高，表現更好。" },
+                { q: "[第6章] Z分數 (Z-score) 的主要功用是什麼？", o: ["計算偏態", "標準化不同單位的資料", "尋找極端值", "取代平均數"], a: 1, e: "Z分數將不同單位的資料標準化，告訴我們某數值「距離平均數有幾個標準差」，以利公平比較。" }
             ],
             part3: [
-                { q: "推論統計的核心目的是什麼？", options: ["整理樣本資料畫成圖表", "計算母體的精確數值", "透過「樣本」資料來推估與檢定「母體」的現象", "確保每個樣本的值都一樣"], a: 2, exp: "推論統計利用機率原理，從小樣本的統計量去推測母體參數，並評估這種推測的可靠程度。" },
-                { q: "老師把全班同學的名字寫在籤紙上放入箱中，均勻攪拌後抽出5人。這是哪一種抽樣方法？", options: ["系統抽樣", "簡單隨機抽樣 (SRS)", "分層抽樣", "叢集抽樣"], a: 1, exp: "完全仰賴機率，不加任何分組或間隔規則，母體中每個個體被抽中的機率完全相等的，就是簡單隨機抽樣。" },
-                { q: "為了確保民調能準確反映全台灣狀況，依據北、中、南、東部人口比例抽出對應人數的樣本。這是哪種抽樣法？", options: ["簡單隨機抽樣", "系統抽樣", "分層抽樣 (Stratified)", "叢集抽樣"], a: 2, exp: "先依據某個重要特徵(如地區、性別)將母體分「層」，再從各層按比例隨機抽樣，確保樣本結構與母體一致。" },
-                { q: "「叢集抽樣 (Cluster Sampling)」的特色口訣是什麼？", options: ["層間同、層內異", "叢集間同、叢集內異", "層間異、層內同", "全部都一樣"], a: 1, exp: "叢集抽樣是把母體分成許多性質相似的小群體(叢集間同)，而每個群體內部包含各種多樣的人(叢集內異)。抽中某個叢集就全部普查。" },
-                { q: "中央極限定理 (CLT) 告訴我們，當樣本數(n)夠大時，不管母體長什麼形狀，其「樣本平均數的抽樣分配」會趨近於什麼形狀？", options: ["均勻分配", "常態分配", "右偏分配", "隨機變化"], a: 1, exp: "這是統計學最重要的定理！只要樣本數夠大(通常n≥30)，樣本平均數的分佈就會呈現常態分配，這讓我們能使用常態曲線來做推論。" },
-                { q: "在假設檢定中，「虛無假設 (H₀)」通常代表的意義是？", options: ["研究者想證明的假設", "變數之間沒有差異、沒有效果或沒有關聯", "變數之間有顯著差異", "運算錯誤的機率"], a: 1, exp: "虛無假設(Null Hypothesis)是我們預設想要去「推翻」的假設，通常代表維持現狀或兩者無差異。" },
-                { q: "如果統計軟體跑出來的 p值 (p-value) = 0.01。在顯著水準 α=0.05 的標準下，我們應該做什麼決策？", options: ["接受虛無假設", "拒絕虛無假設 (有顯著結果)", "重新收集資料", "無法判斷"], a: 1, exp: "因為 p < 0.05，代表如果在H₀為真的情況下，發生這種結果的機率太小了(1%)，所以我們拒絕H₀，認為結果具有統計顯著性。" },
-                { q: "如果想知道「男性與女性」這兩個獨立群體，在「月薪(連續變數)」上是否有顯著差異，應該用哪種統計檢定？", options: ["卡方檢定", "獨立樣本 t檢定", "變異數分析 (ANOVA)", "相關分析"], a: 1, exp: "比較「兩組」平均數差異時，使用 t 檢定 (t-test)。" },
-                { q: "如果想分析「政黨傾向(藍/綠/白)」與「居住地區(北/中/南)」這兩個類別變數之間是否互相獨立(無關聯)，應使用何種分析？", options: ["t 檢定", "卡方檢定 (Chi-Square)", "簡單線性迴歸", "ANOVA"], a: 1, exp: "卡方檢定專門用來處理「類別資料」(名義或次序尺度)的交叉表分析，檢定兩個類別變數是否相關。" },
-                { q: "當我們想預測「讀書時間(X)」能帶來多少「考試分數(Y)」的變化，並建立出 Y = a + bX 的因果方程式時，這是使用什麼分析？", options: ["相關分析", "卡方檢定", "簡單線性迴歸 (Regression)", "變異數分析"], a: 2, exp: "迴歸分析不僅能看變數間是否有關聯，還能建立方程式來預測應變數(Y)的數值。" }
+                // 第 7 章：抽樣與抽樣分配 (4題)
+                { q: "[第7章] 先將全校學生依「年級」分成四組，再從各組隨機抽出 10% 的學生。這是哪種抽樣法？", o: ["簡單隨機抽樣", "系統抽樣", "分層抽樣 (Stratified)", "叢集抽樣"], a: 2, e: "先依特徵分「層」，再從每層抽出比例樣本，確保樣本結構符合母體，這是分層抽樣（層間異、層內同）。" },
+                { q: "[第7章] 研究非法幫派成員，透過認識的一位成員去介紹其他成員來受訪。這是哪種抽樣法？", o: ["便利抽樣", "立意抽樣", "滾雪球抽樣 (Snowball)", "配額抽樣"], a: 2, e: "這是非機率抽樣中的滾雪球抽樣，常用於難以接觸的隱蔽或特定族群研究。" },
+                { q: "[第7章] 只要樣本數夠大(通常 n≥30)，「樣本平均數的抽樣分配」會趨近於常態分配。這是什麼定理？", o: ["柴比雪夫定理", "中央極限定理 (CLT)", "大數法則", "貝氏定理"], a: 1, e: "中央極限定理是推論統計的基石，讓我們能用常態曲線的機率來推論母體。" },
+                { q: "[第7章] 街頭訪問時，規定要找50名男性與50名女性，然後隨便找路人湊滿人數。這是哪種抽樣法？", o: ["分層抽樣", "系統抽樣", "叢集抽樣", "配額抽樣 (Quota)"], a: 3, e: "設定好配額後，用非隨機（便利）的方式湊滿人數，這是配額抽樣，屬於非機率抽樣。" },
+                // 第 8 章：參數估計 (3題)
+                { q: "[第8章] 民調指出候選人支持度為 40%，在95%信心水準下抽樣誤差為 ±3%。這個「37% ~ 43%」的範圍稱為什麼？", o: ["點估計", "信賴區間 (Confidence Interval)", "顯著水準", "P值"], a: 1, e: "給出一個範圍來推估母體真實參數落在哪裡，這個範圍就是信賴區間。" },
+                { q: "[第8章] 使用樣本統計量（如樣本平均數）去推估未知的母體參數，這個過程稱為？", o: ["假設檢定", "參數估計 (Estimation)", "抽樣設計", "變異數分析"], a: 1, e: "透過樣本推估母體的過程稱為參數估計，分為點估計與區間估計。" },
+                { q: "[第8章] 為什麼我們在社會科學中通常會使用「區間估計」而不是「點估計」？", o: ["點估計計算太複雜", "因為點估計幾乎不可能完全命中母體真實參數", "統計軟體不支援點估計", "長官比較喜歡看範圍"], a: 1, e: "點估計是用單一數字猜測母體，誤差極大；區間估計提供了一個容錯範圍與信心水準，較為可靠。" },
+                // 第 9 章：假設檢定 (4題)
+                { q: "[第9章] 在假設檢定中，研究者真正想要證明的結果（例如：新藥真的有效），會被放在哪一個假設中？", o: ["虛無假設 (H0)", "對立假設 (H1)", "錯誤假設", "預設假設"], a: 1, e: "對立假設 (H1) 代表有差異、有效果，是研究者嘗試去證實的目標。" },
+                { q: "[第9章] 如果統計檢定的 P值 (p-value) < 0.05，我們通常會做出什麼結論？", o: ["接受虛無假設 (H0)", "拒絕虛無假設 (H0)", "資料錯誤需重算", "兩者皆可"], a: 1, e: "P值很小，代表「沒效果(H0)」卻出現這種數據的機率極低，因此我們拒絕H0，認為結果達顯著差異。" },
+                { q: "[第9章] 法院「冤枉好人」（H0沒罪卻判有罪），這在統計學上稱為什麼錯誤？", o: ["型一錯誤 (Type I Error)", "型二錯誤 (Type II Error)", "抽樣誤差", "測量誤差"], a: 0, e: "H0為真，我們卻錯誤地拒絕它（沒效卻說有效 / 偽陽性），這就是型一錯誤。" },
+                { q: "[第9章] 醫生對一位即將臨盆的孕婦說「妳沒有懷孕」，這比喻了什麼統計錯誤？", o: ["型一錯誤 (Type I Error)", "型二錯誤 (Type II Error)", "標準誤", "隨機誤差"], a: 1, e: "H0為假，我們卻沒有拒絕它（有效卻說沒效 / 偽陰性），這就是型二錯誤。" },
+                // 第 10 章：類別資料分析 (3題)
+                { q: "[第10章] 想檢驗「性別 (男/女)」與「是否支持死刑 (支持/反對)」這兩個類別變數是否有關聯，應使用哪種檢定？", o: ["獨立樣本 t 檢定", "卡方檢定 (Chi-Square)", "變異數分析 (ANOVA)", "皮爾森相關"], a: 1, e: "卡方檢定專門用於分析兩個「類別變數」的關聯性或獨立性。" },
+                { q: "[第10章] 卡方檢定的核心計算邏輯，是比較哪兩種數值之間的落差？", o: ["平均數與中位數", "組間變異與組內變異", "實際觀察次數 vs. 理論期望次數", "自變數與依變數"], a: 2, e: "卡方值是計算「如果兩者無關時的期望人數」與「現實中實際觀察到的人數」之間的總差距。" },
+                { q: "[第10章] 卡方檢定主要適用於哪一種測量尺度的資料？", o: ["名義或次序尺度 (類別資料)", "等距尺度", "等比尺度", "連續資料"], a: 0, e: "卡方檢定是針對分類好的資料（如性別、政黨、教育程度）計算次數。" },
+                // 第 11 章：變異數分析 (3題)
+                { q: "[第11章] 想比較「A教學法、B教學法、C教學法 (三組以上)」的學生成績平均是否有顯著差異，應使用？", o: ["卡方檢定", "獨立樣本 t 檢定", "變異數分析 (ANOVA)", "線性迴歸"], a: 2, e: "比較「三個或以上」獨立群體的平均值，需使用 ANOVA。" },
+                { q: "[第11章] ANOVA 檢定中，計算出來的 F 值越大，通常代表什麼意義？", o: ["組內變異過大", "組間差異大於組內差異，不同組別間確實有顯著不同", "所有人的成績都一樣", "運算錯誤"], a: 1, e: "F值 = (組間變異) ÷ (組內變異)。F值越大，代表各組之間的差距遠大於個人隨機實力差距，證明分組(教學法)確實有效。" },
+                { q: "[第11章] 在 ANOVA 中，同一組學生彼此之間成績的落差，稱為什麼？", o: ["組間變異", "組內變異", "總變異", "系統變異"], a: 1, e: "組內變異代表同一群體內部個體的差異（隨機誤差）。" },
+                // 第 12 章：相關與迴歸 (4題)
+                { q: "[第12章] 夏天時「冰淇淋銷量」與「溺水人數」呈現高度正相關，這告訴我們什麼重要的統計觀念？", o: ["吃冰淇淋會導致溺水", "相關不等於因果", "統計學沒有用", "這是一種負相關"], a: 1, e: "兩者可能只是受到第三變數(天氣炎熱)的共同影響。相關性不能直接推論因果關係。" },
+                { q: "[第12章] 若皮爾森相關係數 (r) = -0.85，這代表兩個變數之間的關係為何？", o: ["高度正相關", "高度負相關", "零相關", "低度負相關"], a: 1, e: "r值介於 -1 到 +1。負號代表負相關(X上升Y下降)，絕對值0.85代表關聯程度很高。" },
+                { q: "[第12章] 迴歸方程式 Y = 30000 + 2000X，其中 X 是工作年資，Y 是月薪。斜率 2000 代表什麼意思？", o: ["起薪是 2000 元", "年資每增加 1 年，月薪預期增加 2000 元", "最多只能加薪 2000 元", "工作 2000 天可以加薪"], a: 1, e: "迴歸直線中的斜率(b)代表：當自變數(X)變動 1 單位時，依變數(Y)預期變動的數值。" },
+                { q: "[第12章] 在多元迴歸分析中，同時放入多個自變數 (如坪數、屋齡、捷運站數) 的主要好處是什麼？", o: ["讓方程式變長比較專業", "可以在「控制」其他變數的情況下，看出單一變數的淨影響力", "保證 R平方一定等於 1", "減少樣本數需求"], a: 1, e: "多元迴歸能幫我們排除干擾，釐清在其他條件不變下，某個特定因素對結果的真實影響力。" }
             ]
         };
 
-        let currentQuizArray = [];
+        let currentQuizPart = '';
+        let currentQuestions = [];
         let currentQIndex = 0;
         let score = 0;
-        let activeQuizTopic = '';
 
-        const quizMenuScreen = document.getElementById('quiz-selection-screen');
-        const quizActiveScreen = document.getElementById('quiz-active-container');
-        const quizResultScreen = document.getElementById('result-screen');
-        
-        function startSpecificQuiz(topicId) {
-            activeQuizTopic = topicId;
-            currentQuizArray = fullQuizDB[topicId];
+        function startQuiz(partId) {
+            currentQuizPart = partId;
+            currentQuestions = quizzesData[partId];
             currentQIndex = 0;
             score = 0;
             
-            let topicName = "";
-            if(topicId === 'part1') topicName = "第一篇：概論與基礎";
-            if(topicId === 'part2') topicName = "第二篇：描述性統計";
-            if(topicId === 'part3') topicName = "第三篇：推論統計";
-            document.getElementById('quiz-topic-title').innerText = topicName;
-
-            quizMenuScreen.classList.add('hidden');
-            quizResultScreen.classList.add('hidden');
-            quizActiveScreen.classList.remove('hidden');
+            const titles = { part1: '第一篇：概論與基礎 測驗', part2: '第二篇：描述性統計 測驗', part3: '第三篇：推論統計 測驗' };
+            document.getElementById('quiz-title').innerText = titles[partId];
             
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            
+            showSection('quiz-section');
             loadQuestion();
-        }
-
-        function backToQuizMenu() {
-            quizActiveScreen.classList.add('hidden');
-            quizResultScreen.classList.add('hidden');
-            quizMenuScreen.classList.remove('hidden');
-        }
-
-        function retryCurrentQuiz() {
-            startSpecificQuiz(activeQuizTopic);
         }
 
         function loadQuestion() {
-            const feedbackContainer = document.getElementById('feedback-container');
-            const nextBtn = document.getElementById('next-btn');
-            const finishBtn = document.getElementById('finish-btn');
-            const optionsContainer = document.getElementById('options-container');
+            document.getElementById('feedback-container').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
             
-            feedbackContainer.classList.add('hidden');
-            nextBtn.classList.add('hidden');
-            finishBtn.classList.add('hidden');
-            optionsContainer.innerHTML = '';
+            const qData = currentQuestions[currentQIndex];
+            const totalQs = currentQuestions.length;
             
-            const currentQ = currentQuizArray[currentQIndex];
+            document.getElementById('quiz-progress-text').innerText = `${currentQIndex + 1} / ${totalQs}`;
+            document.getElementById('quiz-progress-bar').style.width = `${((currentQIndex + 1) / totalQs) * 100}%`;
+            document.getElementById('question-text').innerText = `Q${currentQIndex + 1}. ${qData.q}`;
             
-            // 進度條
-            document.getElementById('quiz-progress-text').innerText = `${currentQIndex + 1} / ${currentQuizArray.length}`;
-            document.getElementById('quiz-progress-bar').style.width = `${((currentQIndex + 1) / currentQuizArray.length) * 100}%`;
-
-            document.getElementById('question-text').innerText = `Q${currentQIndex + 1}. ${currentQ.q}`;
-
-            currentQ.options.forEach((option, index) => {
+            const optsContainer = document.getElementById('options-container');
+            optsContainer.innerHTML = '';
+            
+            qData.o.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.className = 'w-full text-left p-4 rounded-lg border border-gray-200 hover:bg-indigo-50 hover:border-primary transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary bg-white text-gray-700';
-                btn.innerText = option;
-                btn.onclick = () => selectOption(index, btn);
-                optionsContainer.appendChild(btn);
+                btn.className = 'w-full text-left p-4 rounded-xl border-2 border-gray-100 hover:border-primary hover:bg-indigo-50 transition duration-200 bg-white text-gray-700 font-medium';
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(idx, btn);
+                optsContainer.appendChild(btn);
             });
         }
 
-        function selectOption(selectedIndex, selectedButton) {
-            const optionsContainer = document.getElementById('options-container');
-            const buttons = optionsContainer.querySelectorAll('button');
-            buttons.forEach(btn => btn.disabled = true);
-
-            const currentQ = currentQuizArray[currentQIndex];
-            const isCorrect = selectedIndex === currentQ.a;
-
-            const feedbackContainer = document.getElementById('feedback-container');
+        function selectOption(idx, btn) {
+            const btns = document.getElementById('options-container').querySelectorAll('button');
+            btns.forEach(b => b.disabled = true);
+            
+            const qData = currentQuestions[currentQIndex];
+            const isCorrect = (idx === qData.a);
+            const feedbackBox = document.getElementById('feedback-container');
             const feedbackText = document.getElementById('feedback-text');
-            feedbackContainer.classList.remove('hidden');
+            
+            feedbackBox.classList.remove('hidden');
             
             if (isCorrect) {
                 score++;
-                selectedButton.classList.remove('border-gray-200', 'hover:bg-indigo-50');
-                selectedButton.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800', 'font-bold');
-                feedbackContainer.className = 'mt-6 p-4 rounded-lg bg-emerald-50 border border-emerald-200 block';
-                feedbackText.className = 'font-bold text-emerald-800 text-lg';
+                btn.classList.replace('border-gray-100', 'border-secondary');
+                btn.classList.replace('hover:border-primary', 'bg-teal-50');
+                btn.classList.add('text-secondary', 'font-bold');
+                
+                feedbackBox.className = 'mt-8 p-5 rounded-xl block border-l-4 border-secondary bg-teal-50';
+                feedbackText.className = 'font-black text-lg mb-1 text-secondary';
                 feedbackText.innerHTML = '<i class="fa-solid fa-circle-check mr-2"></i>答對了！';
             } else {
-                selectedButton.classList.remove('border-gray-200', 'hover:bg-indigo-50');
-                selectedButton.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
-                buttons[currentQ.a].classList.remove('border-gray-200');
-                buttons[currentQ.a].classList.add('bg-emerald-50', 'border-emerald-500', 'border-2');
-                feedbackContainer.className = 'mt-6 p-4 rounded-lg bg-red-50 border border-red-200 block';
-                feedbackText.className = 'font-bold text-red-800 text-lg';
+                btn.classList.replace('border-gray-100', 'border-red-400');
+                btn.classList.replace('hover:border-primary', 'bg-red-50');
+                btn.classList.add('text-red-700');
+                
+                btns[qData.a].classList.replace('border-gray-100', 'border-secondary');
+                btns[qData.a].classList.add('bg-teal-50', 'border-2');
+                
+                feedbackBox.className = 'mt-8 p-5 rounded-xl block border-l-4 border-red-500 bg-red-50';
+                feedbackText.className = 'font-black text-lg mb-1 text-red-600';
                 feedbackText.innerHTML = '<i class="fa-solid fa-circle-xmark mr-2"></i>答錯了。';
             }
-
-            document.getElementById('feedback-explanation').innerText = currentQ.exp;
-
-            if (currentQIndex < currentQuizArray.length - 1) {
-                document.getElementById('next-btn').classList.remove('hidden');
+            
+            document.getElementById('feedback-explanation').innerText = qData.e;
+            
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.classList.remove('hidden');
+            if (currentQIndex === currentQuestions.length - 1) {
+                nextBtn.innerHTML = '查看最終成績 <i class="fa-solid fa-trophy ml-1"></i>';
+                nextBtn.onclick = showResults;
             } else {
-                document.getElementById('finish-btn').classList.remove('hidden');
+                nextBtn.innerHTML = '下一題 <i class="fa-solid fa-arrow-right ml-1"></i>';
+                nextBtn.onclick = () => { currentQIndex++; loadQuestion(); };
             }
         }
 
-        document.getElementById('next-btn').addEventListener('click', () => {
-            currentQIndex++;
-            loadQuestion();
-        });
-
-        document.getElementById('finish-btn').addEventListener('click', () => {
-            quizActiveScreen.classList.add('hidden');
-            quizResultScreen.classList.remove('hidden');
+        function showResults() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
             
-            document.getElementById('score-display').innerText = score * 10; // 一題10分
-            document.getElementById('total-display').innerText = currentQuizArray.length * 10;
+            const totalQs = currentQuestions.length;
+            document.getElementById('score-display').innerText = score;
+            document.getElementById('total-score-display').innerText = `滿分 ${totalQs} 分`;
             
+            const percentage = score / totalQs;
             const msgEl = document.getElementById('result-message');
-            const percentage = score / currentQuizArray.length;
             
-            if (percentage === 1) msgEl.innerText = "完美！你已經是統計學大師了。";
-            else if (percentage >= 0.7) msgEl.innerText = "做得很好！觀念很清晰，繼續保持。";
-            else if (percentage >= 0.4) msgEl.innerText = "不錯喔！但有幾個概念可以再回到教學區複習一下。";
-            else msgEl.innerText = "統計學確實不簡單！建議重新閱讀本章節的內容，搭配圖表多操作幾次再挑戰。";
-        });
+            if (percentage === 1) msgEl.innerText = "太完美了！您對本篇的觀念已經融會貫通！";
+            else if (percentage >= 0.7) msgEl.innerText = "非常棒！基礎很穩固，只差一點點就完美囉！";
+            else if (percentage >= 0.4) msgEl.innerText = "再接再厲！建議可以回頭複習一下錯的觀念。";
+            else msgEl.innerText = "沒關係，學習需要時間，多看幾次生活實例會更有感覺喔！";
 
-        // --- 初始化頁面 ---
+            // --- 新增：徽章系統觸發邏輯 (答對率 80% 以上解鎖) ---
+            if (percentage >= 0.8 && !learningProgress.badges[currentQuizPart]) {
+                learningProgress.badges[currentQuizPart] = true;
+                localStorage.setItem('socialStatsProgress', JSON.stringify(learningProgress));
+                updateProgressUI();
+                
+                // 延遲一下顯示徽章解鎖彈窗，讓使用者先看到分數
+                setTimeout(() => {
+                    const titles = { part1: '第一篇：概論與基礎', part2: '第二篇：描述性統計', part3: '第三篇：推論統計' };
+                    document.getElementById('badge-modal-text').innerText = `恭喜您獲得「${titles[currentQuizPart]}」精熟徽章！`;
+                    const modal = document.getElementById('badge-modal');
+                    modal.classList.remove('hidden');
+                    // 觸發放大動畫
+                    setTimeout(() => { modal.firstElementChild.classList.replace('scale-90', 'scale-100'); }, 10);
+                }, 800);
+            }
+        }
+
+        // 新增：關閉徽章彈窗
+        function closeBadgeModal() {
+            const modal = document.getElementById('badge-modal');
+            modal.firstElementChild.classList.replace('scale-100', 'scale-90');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        // --- 新增：迷你統計計算機邏輯 ---
+        function toggleCalculator() {
+            const panel = document.getElementById('statPanel');
+            panel.classList.toggle('show');
+        }
+
+        function calculateStats() {
+            const input = document.getElementById('statInput').value;
+            const output = document.getElementById('statOutput');
+            const error = document.getElementById('statError');
+            
+            // 解析輸入數值，支援逗號與空白分隔
+            let arr = input.split(/[,，\s]+/).map(Number).filter(n => !isNaN(n));
+            
+            if (arr.length === 0) {
+                output.classList.add('hidden');
+                error.classList.remove('hidden');
+                return;
+            }
+            
+            error.classList.add('hidden');
+            arr.sort((a, b) => a - b);
+            
+            const n = arr.length;
+            const sum = arr.reduce((a, b) => a + b, 0);
+            const mean = sum / n;
+            
+            // 計算中位數
+            let median;
+            const mid = Math.floor(n / 2);
+            if (n % 2 === 0) median = (arr[mid - 1] + arr[mid]) / 2;
+            else median = arr[mid];
+            
+            // 計算全距
+            const range = arr[n - 1] - arr[0];
+            
+            // 計算樣本標準差 (分母除以 n-1)
+            let variance = 0;
+            if (n > 1) {
+                const sumSq = arr.reduce((a, b) => a + Math.pow(b - mean, 2), 0);
+                variance = sumSq / (n - 1);
+            }
+            const std = Math.sqrt(variance);
+            
+            // 更新 UI
+            document.getElementById('out-n').innerText = n;
+            document.getElementById('out-mean').innerText = mean.toFixed(2);
+            document.getElementById('out-median').innerText = median.toFixed(2);
+            document.getElementById('out-range').innerText = range.toFixed(2);
+            document.getElementById('out-std').innerText = n > 1 ? std.toFixed(2) : '無(資料不足)';
+            
+            output.classList.remove('hidden');
+        }
+
+        // --- 初始化 ---
         window.onload = function() {
+            updateProgressUI();      // 載入時讀取本地進度
+            markAsViewed('home');    // 預設首頁為已讀
+            initDemoCharts();        // 載入第3章範例圖表
             drawCentralChart();
             drawNormalChart();
-            initPopulationGrid();
-            
-            document.getElementById('newDataInput').addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') document.getElementById('addDataBtn').click();
-            });
+            initPopGrid();
+            drawRegressionChart();
         };
-
     </script>
 </body>
 </html>
